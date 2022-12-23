@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--MyBatis配置文件-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lsc.blog.dao.mapper.TagMapper">
+    <!--
+        List<Tag> findTagsByArticleId(Long articleId); parameterType对应上面的long pojo.tag对应List<Tag>
+        tag_name as tagName，使其与数据库的字段名一致
+        where article_id=#{articleId}，这里的articleId就是findTagsByArticleId(Long articleId)的articleId
+        #{方法的参数} - 如果是12，则是where article_id=#{12}
+    -->
+    <select id="findTagsByArticleId" parameterType="long" resultType="com.lsc.blog.dao.pojo.Tag">
+        select id,avatar,tag_name as tagName from  ms_tag
+        where id in
+              (select tag_id from ms_article_tag where article_id=#{articleId})
+    </select>
+
+    <!--
+        List<Long> findHotsTagIds(int limit);
+    -->
+    <select id="findHotsTagIds" parameterMap="int" resultType="java.lang.Long">
+        select tag_id from `ms_article_tag` group by tag_id order by count(*) desc limit #{limit}
+    </select>
+
+    <select id="findTagsByTagIds" parameterType="list" resultType="com.lsc.blog.dao.pojo.Tag">
+        select id,tag_name as tagName from ms_tag
+        where id in
+        <foreach collection="tagIds" item="tagId" separator="," open="(" close=")">
+            #{tagId}
+        </foreach>
+    </select>
+
+</mapper>
