@@ -2,6 +2,7 @@ package com.lsc.blog.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.lsc.blog.dao.dos.Archives;
 import com.lsc.blog.dao.mapper.ArticleMapper;
 import com.lsc.blog.dao.pojo.Article;
 import com.lsc.blog.service.ArticleService;
@@ -92,6 +93,24 @@ public class ArticleServiceImpl implements ArticleService {
         List<Article> articles = articleMapper.selectList(queryWrapper);
         return Result.success(copyList(articles,false,false));
     }
+
+    /**
+     * 文章归档
+     * @param records
+     * @param isTag
+     * @param isAuthor
+     * @return
+     */
+    @Override
+    public Result listArchives() {
+        //mapper里的sql语句：select year(FROM_UNIXTIME(create_date/1000)) year,month(FROM_UNIXTIME(create_date/1000)) month, count(*) count from ms_article group by year,month;
+        //可能会报null年null月的错误，看视频P9或者找源码对照看看
+
+        //"Archives":文章归档类，数据库并不存在，所以创建dos文件夹，里面存放do对象（指不是数据库的对象，只做展示使用，即不会持久化的对象）
+        List<Archives> archivesList = articleMapper.listArchives();
+        return Result.success(archivesList);
+    }
+
 
     private List<ArticleVo> copyList(List<Article> records, boolean isTag, boolean isAuthor) {
         List<ArticleVo> articleVoList = new ArrayList<>();
