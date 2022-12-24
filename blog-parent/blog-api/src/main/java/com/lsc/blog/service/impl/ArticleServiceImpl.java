@@ -103,9 +103,6 @@ public class ArticleServiceImpl implements ArticleService {
      */
     @Override
     public Result listArchives() {
-        //mapper里的sql语句：select year(FROM_UNIXTIME(create_date/1000)) year,month(FROM_UNIXTIME(create_date/1000)) month, count(*) count from ms_article group by year,month;
-        //可能会报null年null月的错误，看视频P9或者找源码对照看看
-
         //"Archives":文章归档类，数据库并不存在，所以创建dos文件夹，里面存放do对象（指不是数据库的对象，只做展示使用，即不会持久化的对象）
         List<Archives> archivesList = articleMapper.listArchives();
         return Result.success(archivesList);
