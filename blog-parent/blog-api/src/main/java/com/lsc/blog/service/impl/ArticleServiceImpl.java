@@ -11,13 +11,10 @@ import com.lsc.blog.service.TagService;
 import com.lsc.blog.vo.ArticleVo;
 import com.lsc.blog.vo.Result;
 import com.lsc.blog.vo.params.PageParams;
-import org.aspectj.weaver.ast.Var;
 import org.joda.time.DateTime;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.sql.Wrapper;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -96,9 +93,6 @@ public class ArticleServiceImpl implements ArticleService {
 
     /**
      * 文章归档
-     * @param records
-     * @param isTag
-     * @param isAuthor
      * @return
      */
     @Override
