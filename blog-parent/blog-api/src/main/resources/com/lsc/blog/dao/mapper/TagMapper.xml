@@ -4,9 +4,11 @@
 
 <mapper namespace="com.lsc.blog.dao.mapper.TagMapper">
     <!--
-        List<Tag> findTagsByArticleId(Long articleId); parameterType对应上面的long pojo.tag对应List<Tag>
-        tag_name as tagName，使其与数据库的字段名一致
-        where article_id=#{articleId}，这里的articleId就是findTagsByArticleId(Long articleId)的articleId
+        " List<Tag> findTagsByArticleId(Long articleId); "
+        parameterType 对应 articleId的long
+        pojo.tag 对应 List<Tag>
+        tag_name as tagName （使其与数据库的字段名一致）
+        where article_id=#{articleId} （这里的articleId就是findTagsByArticleId(Long articleId)的articleId）
         #{方法的参数} - 如果是12，则是where article_id=#{12}
     -->
     <select id="findTagsByArticleId" parameterType="long" resultType="com.lsc.blog.dao.pojo.Tag">

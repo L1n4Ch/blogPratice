@@ -25,6 +25,7 @@ public class ArticleVo {
 
     private String author;
 
+    //    "文章体" 在 首页 文章列表中不需要展示
     //    private ArticleBodyVo body;
 
     private List<TagVo> tags;

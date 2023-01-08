@@ -4,6 +4,7 @@ import com.lsc.blog.vo.Result;
 import com.lsc.blog.vo.params.PageParams;
 
 public interface ArticleService {
+
     /**
      * 分页查询文章列表
      * @param pageParams
@@ -30,4 +31,5 @@ public interface ArticleService {
      * @return
      */
     Result listArchives();
+
 }

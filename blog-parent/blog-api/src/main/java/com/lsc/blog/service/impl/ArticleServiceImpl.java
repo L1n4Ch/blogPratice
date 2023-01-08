@@ -20,6 +20,7 @@ import java.util.List;
 
 @Service
 public class ArticleServiceImpl implements ArticleService {
+
     @Autowired
     private ArticleMapper articleMapper;
 
@@ -29,75 +30,49 @@ public class ArticleServiceImpl implements ArticleService {
     @Autowired
     private SysUserService sysUserService;
 
-    /**
-     * 分页查询文章列表
-     *
-     * @param pageParams
-     * @return
-     */
     @Override
     public Result listArticle(PageParams pageParams) {
         Page<Article> page = new Page<>(pageParams.getPage(), pageParams.getPageSize());
         LambdaQueryWrapper<Article> queryWrapper = new LambdaQueryWrapper<>();
-        //2.确认查询条件：文章按时间降序排序 和 是否置顶排序
+        // 根据"创建时间"和"是否置顶"降序排序
         queryWrapper.orderByDesc(Article::getCreateDate,Article::getWeight);
-        //1.selectPage两个条件，page和查询条件query
         Page<Article> articlePage = articleMapper.selectPage(page, queryWrapper);
-        //得到page后再获取整个page 的 list (获取的是pojo的list，需要将其转义成vo的list)
+        // 得到page后再获取整个page 的 list （获取的是pojo的list）
         List<Article> records = articlePage.getRecords();
-        //转义方法：copyList-手动写,本质是copy转义，copyList是遍历转义的结果
+        // 需要将其转义成vo的list （由于上面获取的是pojo的list）
         List<ArticleVo> articleVoList = copyList(records, true, true);
         return Result.success(articleVoList);
     }
 
-    /**
-     * 最热文章
-     * @param limit
-     * @return
-     */
     @Override
     public Result hotArticle(int limit) {
         LambdaQueryWrapper<Article> queryWrapper = new LambdaQueryWrapper<>();
-        //确认查询条件：最热文章按照文章访问量view_counts进行倒序排序
+        // 最热文章根据"文章访问量"降序排序
         queryWrapper.orderByDesc(Article::getViewCounts);
-        //取文章的两条数据：id和title
+        // 取文章的两条数据：id和title
         queryWrapper.select(Article::getId,Article::getTitle);
-        //last是最后拼接，这里写成：queryWrapper.last("limit 5");是一个效果？只是在这里声明limit？
+        // last是最后拼接，这里写成：queryWrapper.last("limit 5");是一个效果？只是在这里声明limit？
         queryWrapper.last("limit " + limit);
-        //sql语句为：select id,title from article order by view_counts desc limit 5;
+        // sql语句为：select id,title from article order by view_counts desc limit 5;
         List<Article> articles = articleMapper.selectList(queryWrapper);
-        //返回vo对象，而不是pojo对象，使用copyList转义
+        // 需要将其转义成vo的list （由于上面获取的是pojo的list）
         return Result.success(copyList(articles,false,false));
-
-        //以下为上面写法的扩展写法
-//        List<ArticleVo> articleVosList = copyList(articles, false, false);
-//        return Result.success(articleVosList);
-
     }
 
-    /**
-     * 最新文章
-     * @param limit
-     * @return
-     */
     @Override
     public Result newArticle(int limit) {
         LambdaQueryWrapper<Article> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.orderByDesc(Article::getCreateDate);
         queryWrapper.select(Article::getId,Article::getTitle);
         queryWrapper.last("limit " + limit);
-        //sql语句为：select id,title from article order by create_date desc limit 5;
+        // sql语句为：select id,title from article order by create_date desc limit 5;
         List<Article> articles = articleMapper.selectList(queryWrapper);
         return Result.success(copyList(articles,false,false));
     }
 
-    /**
-     * 文章归档
-     * @return
-     */
     @Override
     public Result listArchives() {
-        //"Archives":文章归档类，数据库并不存在，所以创建dos文件夹，里面存放do对象（指不是数据库的对象，只做展示使用，即不会持久化的对象）
+        // "Archives":文章归档类，数据库并不存在，所以创建dos文件夹，里面存放do对象（指不是数据库的对象，只做展示使用，即不会持久化的对象）
         List<Archives> archivesList = articleMapper.listArchives();
         return Result.success(archivesList);
     }
@@ -105,26 +80,35 @@ public class ArticleServiceImpl implements ArticleService {
 
     private List<ArticleVo> copyList(List<Article> records, boolean isTag, boolean isAuthor) {
         List<ArticleVo> articleVoList = new ArrayList<>();
-        for (Article record : records) {    //这里是 records.for，才有会这个record
+        // copy -> copyList ： 本质即使用for循环遍历record，得到recordList（records），再add至articleVoList
+            // for循环快捷键 ： records.for
+        for (Article record : records) {
             articleVoList.add(copy(record, isTag, isAuthor));
         }
         return articleVoList;
     }
 
-    //这里的boolean判断-并不是所有文章接口都需要标签和作者
+
+    // ArticleVo里有 tag和author属性。
+    // 而Article里则没有这两个属性，而且并不是所有接口都需要这两个属性
+    // 所以copy需要加一层判断：isTag isAuthor
     private ArticleVo copy(Article article, boolean isTag, boolean isAuthor){
         ArticleVo articleVo = new ArticleVo();
         BeanUtils.copyProperties(article,articleVo);
-        //注意Article和ArticleVo的createDate，类型不同，一个是Long一个是String，无法直接copy，这里直接进行set
+        // 注意Article和ArticleVo的createDate，类型不同，一个是Long一个是String，无法直接copy，这里进行set并使用toString转换
         articleVo.setCreateDates(new DateTime(article.getCreateDate()).toString("yyyy-MM-dd:mm"));
         if(isTag){
+            // 注意：因为是文章的tag，所以用文章id（articleId）查找 tag，
+            // 而且article对象并没有tagId这个属性，只能拿到文章id，所以使用articleId来查找tag
             Long articleId = article.getId();
             articleVo.setTags(tagService.findTagsByArticleId(articleId));
         }
         if(isAuthor){
+            // 同上，这里通过article只能拿到authorId
             Long authorId = article.getAuthorId();
             articleVo.setAuthor(sysUserService.findUserById(authorId).getNickname());
         }
         return articleVo;
     }
+
 }

@@ -12,11 +12,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class TagController {
     @Autowired
     private TagService tagService;
-    //路径映射：tags/hot
+
     @GetMapping("hot")
     public Result hot(){
         //查询最热的6个标签
         int limit = 6;
         return tagService.hots(limit);
     }
+
 }

@@ -20,7 +20,6 @@ public class ArticleController {
      */
     @PostMapping()
     public Result listArticle(@RequestBody PageParams pageParams) {
-        //return Result.success();
         return articleService.listArticle(pageParams);
     }
 
@@ -29,7 +28,6 @@ public class ArticleController {
      */
     @PostMapping("hot")
     public Result hotArticle(){
-        //前limit个最热文章
         int limit = 5;
         return articleService.hotArticle(limit);
     }

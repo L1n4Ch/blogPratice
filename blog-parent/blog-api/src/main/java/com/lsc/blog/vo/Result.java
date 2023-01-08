@@ -15,7 +15,6 @@ public class Result {
 
     private Object data;
 
-    //封装一个构造函数
     public static Result success(Object data){
         return new Result(true, 200, "success", data);
     }
@@ -23,4 +22,5 @@ public class Result {
     public static Result fail(int code, String msg){
         return new Result(false, code, msg, null);
     }
+
 }

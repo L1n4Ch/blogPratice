@@ -8,8 +8,9 @@ import java.util.List;
 
 @Mapper
 public interface TagMapper extends BaseMapper<Tag> {
+
     /**
-     * 根据文章id查询 标签列表TagList
+     * 根据文章id查询 标签列表TagList （涉及到tag表和article_tag表，多表查询）
      * @param articleId
      * @return
      */
@@ -28,4 +29,5 @@ public interface TagMapper extends BaseMapper<Tag> {
      * @return
      */
     List<Tag> findTagsByTagIds(List<Long> tagIds);
+
 }

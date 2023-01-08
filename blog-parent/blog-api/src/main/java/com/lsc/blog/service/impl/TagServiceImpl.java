@@ -20,18 +20,14 @@ public class TagServiceImpl implements TagService {
     private TagMapper tagMapper;
 
     @Override
-    //因为要返回的是<TagVo>，所以return是以copyList转义的结果
     public List<TagVo> findTagsByArticleId(Long articleId) {
-        //mybatisPlus 无法进行多表查询-tagMapper在数据库表中除了有ms_tag表，还有一个ms_article tag关联表
+        // 在数据库表中除了有ms_tag表，还有一个ms_article tag关联表，进行多表查询
+        // 多表查询：在ms_tag表中查询获得tag的集合list；又需要在 ms_article_tag表 中 拿articleId（参数），所以是多表查询
+        // 而mybatisPlus无法进行多表查询，所以需要在mapper里写sql语句
         List<Tag> tags = tagMapper.findTagsByArticleId(articleId);
         return copyList(tags);
     }
 
-    /**
-     * 最热标签(前6个)
-     * @param limit
-     * @return
-     */
     @Override
     public Result hots(int limit) {
         /*
@@ -39,13 +35,10 @@ public class TagServiceImpl implements TagService {
          * 即分组查询（groupBy）根据 tags_id，count（技术文章量）来查询，取前limit个，并从大到小排序（desc）
          */
         List<Long> tagIds =  tagMapper.findHotsTagIds(limit);
-        //写一个tagIds为空的判断：如果为空，给tagIds赋予一个空值
+        // 写一个tagIds为空的判断：如果为空，给tagIds赋予一个空值
         if(CollectionUtils.isEmpty(tagIds)){
             return Result.success(Collections.emptyList());
         }
-        //这里只得到了tagIds（最热标签的id），实际上需要的是Tag对象（最热），即还需要得到tagName
-        //findTagsByTagIds里的Tags即tagName
-        //tagList，即Tag对象（最热）的集合
         List<Tag> tagList = tagMapper.findTagsByTagIds(tagIds);
         return Result.success(tagList);
     }

@@ -9,5 +9,10 @@ import java.util.List;
 
 @Mapper
 public interface ArticleMapper extends BaseMapper<Article> {
+
+    /**
+     * 文章归档
+     * @return
+     */
     List<Archives> listArchives();
 }
