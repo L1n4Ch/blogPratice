@@ -25,20 +25,18 @@ public class LoginServiceImpl implements LoginService {
     @Autowired
     private RedisTemplate<String,String> redisTemplate;
 
-    //加密盐
+    // 加密盐
     private static final String salt = "lsc!@#";
 
     @Override
     public Result login(LoginParams loginParams) {
-        /*
-         * 1.检查参数是否合法
-         * 2.根据用户名和密码去user表中查询是否存在，如果不存在，则登陆失败，如果存在，使用JWT生成token，返回给前端
-         * 3.将token放入redis中，redis存放token/user表信息，并给redis设置过期时间（登陆认证时，先认证token字符串是否合法，再去redis中验证是否妇女在）
-         */
+        // 1.检查参数是否合法
+        // 2.根据用户名和密码去user表中查询是否存在，如果不存在，则登陆失败，如果存在，使用JWT生成token，返回给前端
+        // 3.将token放入redis中，redis存放token/user表信息，并给redis设置过期时间（登陆认证时，先认证token字符串是否合法，再去redis中验证是否存在）
         String account = loginParams.getAccount();
         String password = loginParams.getPassword();
         if(StringUtils.isBlank(account) || StringUtils.isBlank(password)){
-            //使用枚举类统一包装错误玛
+            // 使用枚举类统一包装错误玛
             return Result.fail(ErrorCode.PARAMS_ERROR.getCode(), ErrorCode.PARAMS_ERROR.getMsg());
         }
         password = DigestUtils.md5Hex(password + salt);
