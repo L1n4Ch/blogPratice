@@ -30,10 +30,8 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public Result hots(int limit) {
-        /*
-         * 业务逻辑：最热标签的查询根据当前标签ID下的文章数量决定
-         * 即分组查询（groupBy）根据 tags_id，count（技术文章量）来查询，取前limit个，并从大到小排序（desc）
-         */
+        // 业务逻辑：最热标签的查询根据当前标签ID下的文章数量决定，文章数量最多就是最热标签（而不是访问的人最多，那是最热文章）
+        // 即分组查询（groupBy）根据 tags_id，count（技术文章量）来查询，取前limit个，并从大到小排序（desc）
         List<Long> tagIds =  tagMapper.findHotsTagIds(limit);
         // 写一个tagIds为空的判断：如果为空，给tagIds赋予一个空值
         if(CollectionUtils.isEmpty(tagIds)){
