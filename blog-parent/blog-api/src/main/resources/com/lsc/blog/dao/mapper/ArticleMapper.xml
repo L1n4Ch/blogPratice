@@ -4,10 +4,18 @@
 
 <mapper namespace="com.lsc.blog.dao.mapper.ArticleMapper">
 
+    <!--
+        语句无参数，所以无parameterType
+
+        视频里的sql语句：
+        select year(create_date) as year,month(create_date) as month,count(*) as count from `ms_article`
+        group by year,month
+        count(*) 就是year和month的总计
+    -->
     <select id="listArchives" resultType="com.lsc.blog.dao.dos.Archives">
 --         select year(FROM_UNIXTIME(create_date/1000)) year,month(FROM_UNIXTIME(create_date/1000)) month, count(*) count from ms_article group by year,month;
 --         select year(FROM_UNIXTIME(create_date/1000)) as year, month(FROM_UNIXTIME(create_date/1000)) as month, count(*) as count from ms_article group by year,month;
-        select FROM_UNIXTIME(create_date/1000,'%Y') as year,FROM_UNIXTIME(create_date/1000,'%m') as month,count(*) as count from ms_article group by year,month
+        select FROM_UNIXTIME(create_date/1000,'%Y') as year,FROM_UNIXTIME(create_date/1000,'%m') as month,count(*) as count from `ms_article` group by year,month
     </select>
 
 </mapper>

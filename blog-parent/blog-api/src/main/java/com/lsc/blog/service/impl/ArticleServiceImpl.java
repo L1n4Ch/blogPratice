@@ -51,7 +51,6 @@ public class ArticleServiceImpl implements ArticleService {
         queryWrapper.orderByDesc(Article::getViewCounts);
         // 取文章的两条数据：id和title
         queryWrapper.select(Article::getId,Article::getTitle);
-        // last是最后拼接，这里写成：queryWrapper.last("limit 5");是一个效果？只是在这里声明limit？
         queryWrapper.last("limit " + limit);
         // sql语句为：select id,title from article order by view_counts desc limit 5;
         List<Article> articles = articleMapper.selectList(queryWrapper);
@@ -65,14 +64,14 @@ public class ArticleServiceImpl implements ArticleService {
         queryWrapper.orderByDesc(Article::getCreateDate);
         queryWrapper.select(Article::getId,Article::getTitle);
         queryWrapper.last("limit " + limit);
-        // sql语句为：select id,title from article order by create_date desc limit 5;
         List<Article> articles = articleMapper.selectList(queryWrapper);
         return Result.success(copyList(articles,false,false));
     }
 
     @Override
     public Result listArchives() {
-        // "Archives":文章归档类，数据库并不存在，所以创建dos文件夹，里面存放do对象（指不是数据库的对象，只做展示使用，即不会持久化的对象）
+        // "Archives":文章归档类，数据库并不存在，所以创建dos文件夹，里面存放do对象 （不是vo对象，所以无需copyList）
+        // （指不是数据库的对象，只做展示使用，即不会持久化的对象）
         List<Archives> archivesList = articleMapper.listArchives();
         return Result.success(archivesList);
     }
@@ -99,12 +98,12 @@ public class ArticleServiceImpl implements ArticleService {
         articleVo.setCreateDates(new DateTime(article.getCreateDate()).toString("yyyy-MM-dd:mm"));
         if(isTag){
             // 注意：因为是文章的tag，所以用文章id（articleId）查找 tag，
-            // 而且article对象并没有tagId这个属性，只能拿到文章id，所以使用articleId来查找tag
+            // 而且article对象并没有tagId这个属性，这里通过article类的get方法只能拿到文章id，所以使用articleId来查找tag
             Long articleId = article.getId();
             articleVo.setTags(tagService.findTagsByArticleId(articleId));
         }
         if(isAuthor){
-            // 同上，这里通过article只能拿到authorId
+            // 同上，这里通过article类的get方法只能拿到authorId，所以使用authorId来作为id
             Long authorId = article.getAuthorId();
             articleVo.setAuthor(sysUserService.findUserById(authorId).getNickname());
         }

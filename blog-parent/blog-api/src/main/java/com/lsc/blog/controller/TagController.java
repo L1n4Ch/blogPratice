@@ -13,6 +13,10 @@ public class TagController {
     @Autowired
     private TagService tagService;
 
+    /**
+     * 首页 最热标签
+     * @return
+     */
     @GetMapping("hot")
     public Result hot(){
         int limit = 6;

@@ -3,8 +3,14 @@ package com.lsc.blog.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.lsc.blog.dao.mapper.SysUserMapper;
 import com.lsc.blog.dao.pojo.SysUser;
+import com.lsc.blog.service.LoginService;
 import com.lsc.blog.service.SysUserService;
+import com.lsc.blog.vo.ErrorCode;
+import com.lsc.blog.vo.LoginUserVo;
+import com.lsc.blog.vo.Result;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -12,6 +18,9 @@ public class SysUserServiceImpl implements SysUserService {
 
     @Autowired
     private SysUserMapper sysUserMapper;
+
+    @Autowired
+    private LoginService loginService;
 
     @Override
     public SysUser findUserById(Long id) {
@@ -34,6 +43,28 @@ public class SysUserServiceImpl implements SysUserService {
         queryWrapper.select(SysUser::getAccount,SysUser::getId,SysUser::getAvatar,SysUser::getNickname);
         queryWrapper.last("limit 1");
         return sysUserMapper.selectOne(queryWrapper);
+    }
+
+    @Override
+    public Result findUserByToken(String token) {
+
+        // 1.token合法性校验。（token是否为空，token解析是否成功，redis是否存在）
+        // 2.如果校验失败 返回错误
+        // 3.如果成功，返回对应的结果 （创建一个LoginUserVo对象）
+
+        // 步骤1
+        SysUser sysUser = loginService.checkToken(token);
+        // 步骤2
+        if(sysUser == null){
+            return Result.fail(ErrorCode.TOKEN_ERROR.getCode(), ErrorCode.TOKEN_ERROR.getMsg());
+        }
+        // 步骤3
+        LoginUserVo loginUserVo = new LoginUserVo();
+        loginUserVo.setId(sysUser.getId());
+        loginUserVo.setNickName(sysUser.getNickname());
+        loginUserVo.setAvatar(sysUser.getAvatar());
+        loginUserVo.setAccount(sysUser.getAccount());
+        return Result.success(loginUserVo);
     }
 
 }

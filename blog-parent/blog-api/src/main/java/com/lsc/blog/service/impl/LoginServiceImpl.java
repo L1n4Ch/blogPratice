@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -44,9 +45,35 @@ public class LoginServiceImpl implements LoginService {
         if(sysUser == null){
             return Result.fail(ErrorCode.ACCOUNT_PWD_NOT_EXIST.getCode(), ErrorCode.ACCOUNT_PWD_NOT_EXIST.getMsg());
         }
+        // 登陆成功，使用JWT生成token，返回token和redis中
         String token = JWTUtils.createToken(sysUser.getId());
         redisTemplate.opsForValue().set("TOKEN_" + token, JSON.toJSONString(sysUser),1, TimeUnit.DAYS);
         return Result.success(token);
+    }
+
+    @Override
+    public SysUser checkToken(String token) {
+        if(StringUtils.isBlank(token)){
+            return null;
+        }
+        Map<String, Object> stringObjectMap = JWTUtils.checkToken(token);
+        if(stringObjectMap == null){
+            return null;
+        }
+        String userJson = redisTemplate.opsForValue().get("TOKEN_" + token);
+        if(StringUtils.isBlank(userJson)){
+            return null;
+        }
+        SysUser sysUser = JSON.parseObject(userJson, SysUser.class);
+        return sysUser;
+    }
+
+    @Override
+    public Result logout(String token) {
+        // 删除redis中的token即退出登录
+        redisTemplate.delete("TOKEN_" + token);
+        // 文档中的数据声明：退出登录后返回的data数据为null
+        return Result.success(null);
     }
 
 }

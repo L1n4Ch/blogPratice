@@ -20,12 +20,17 @@
     <!--
         List<Long> findHotsTagIds(int limit);
     -->
-    <select id="findHotsTagIds" parameterMap="int" resultType="java.lang.Long">
+    <select id="findHotsTagIds" parameterType="int" resultType="java.lang.Long">
         select tag_id from `ms_article_tag` group by tag_id order by count(*) desc limit #{limit}
     </select>
 
+    <!--
+        expr1 in（expr2，expr3，expr4，…）表示expr1等于后面括号里面的任意一个表达式的值
+        foreach是for循环
+        注意：如果查不到或者报错 collection="tagIds" 改成 collection="list"
+    -->
     <select id="findTagsByTagIds" parameterType="list" resultType="com.lsc.blog.dao.pojo.Tag">
-        select id,tag_name as tagName from ms_tag
+        select id,tag_name as tagName from `ms_tag`
         where id in
         <foreach collection="tagIds" item="tagId" separator="," open="(" close=")">
             #{tagId}
