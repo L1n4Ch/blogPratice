@@ -40,7 +40,7 @@ public class SysUser {
     private String password;
 
     /**
-     * 加密盐
+     * 加密盐 （可以在这里写死加密盐？然后再从类中获取该属性？）
      */
     private String salt;
 

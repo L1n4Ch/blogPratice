@@ -14,7 +14,7 @@ public interface LoginService {
     Result login(LoginParams loginParams);
 
     /**
-     * 校验token合法性
+     * 校验token合法性（用于登录后获取用户信息）
      * @param token
      * @return
      */

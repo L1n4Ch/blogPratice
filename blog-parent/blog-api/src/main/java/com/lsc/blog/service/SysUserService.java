@@ -25,7 +25,7 @@ public interface SysUserService {
     SysUser findUser(String account, String password);
 
     /**
-     * 根据token查询用户信息
+     * 根据token查询用户信息（登录后获取用户信息）
      * @param token
      * @return
      */

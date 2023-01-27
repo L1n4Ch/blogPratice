@@ -40,8 +40,10 @@ public class SysUserServiceImpl implements SysUserService {
         LambdaQueryWrapper<SysUser> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(SysUser::getAccount,account);
         queryWrapper.eq(SysUser::getPassword,password);
+        // 选择查询出来的用户的所需信息
         queryWrapper.select(SysUser::getAccount,SysUser::getId,SysUser::getAvatar,SysUser::getNickname);
         queryWrapper.last("limit 1");
+        // selectOne：mybatis中接受不了数据结果的方法，接受单条数据。接受多条数据结果的方法为selectList
         return sysUserMapper.selectOne(queryWrapper);
     }
 
@@ -52,8 +54,8 @@ public class SysUserServiceImpl implements SysUserService {
         // 2.如果校验失败 返回错误
         // 3.如果成功，返回对应的结果 （创建一个LoginUserVo对象）
 
-        // 步骤1
-        SysUser sysUser = loginService.checkToken(token);
+        // 步骤1（在checkToken方法里）
+        SysUser sysUser = loginService.checkToken(token);   // token解析成功，返回user信息
         // 步骤2
         if(sysUser == null){
             return Result.fail(ErrorCode.TOKEN_ERROR.getCode(), ErrorCode.TOKEN_ERROR.getMsg());
