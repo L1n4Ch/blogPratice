@@ -26,16 +26,22 @@ public class PermissionService {
 
         // 返回的数据为后台管理系统中permission表的所有字段 即返回permission类对象
         // 进行分页查询 PageResult返回对象
+
         Page<Permission> page = new Page<>(pageParam.getCurrentPage(), pageParam.getPageSize());
+
+        // 查询
         LambdaQueryWrapper<Permission> queryWrapper = new LambdaQueryWrapper<>();
         if(StringUtils.isNotBlank(pageParam.getQueryString())){
             queryWrapper.eq(Permission::getName, pageParam.getQueryString());
         }
+
+        // 分页
         Page<Permission> permissionPage = permissionMapper.selectPage(page,queryWrapper);
         PageResult<Permission> pageResult = new PageResult<>();
         pageResult.setList(permissionPage.getRecords());
         pageResult.setTotal(permissionPage.getTotal());
         return Result.success(pageResult);
+
     }
 
     /**
