@@ -5,6 +5,9 @@ import lombok.Data;
 @Data
 public class SysUser {
 
+//    @TableId(type = IdType.ASSIGN_ID)   // 分布式id
+//    @TableId(type = IdType.AUTO)    // 自增id
+    // 建议使用分布式id（mybatisPlus默认使用分布式id），以后用户多了，要进行分表操作
     private Long id;
 
     private String account;
