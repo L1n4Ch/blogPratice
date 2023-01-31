@@ -4,9 +4,9 @@
         <!-- 页面meta -->
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>码神之路博客管理后台</title>
-        <meta name="description" content="码神之路博客管理后台">
-        <meta name="keywords" content="码神之路博客管理后台">
+        <title>DASHABI管理后台</title>
+        <meta name="description" content="DASHABI管理后台">
+        <meta name="keywords" content="DASHABI管理后台">
         <meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" name="viewport">
         <!-- 引入样式 -->
         <link rel="stylesheet" href="../plugins/elementui/index.css">
@@ -26,6 +26,7 @@
     </head>
     <body class="hold-transition">
         <div id="app">
+
             <div class="content-header">
                 <h1>网站管理<small>权限管理</small></h1>
                 <el-breadcrumb separator-class="el-icon-arrow-right" class="breadcrumb">
@@ -34,13 +35,16 @@
                     <el-breadcrumb-item>权限管理</el-breadcrumb-item>
                 </el-breadcrumb>
             </div>
+
             <div class="app-container">
                 <div class="box">
+
                     <div class="filter-container">
                         <el-input placeholder="权限名称" v-model="pagination.queryString" style="width: 200px;" class="filter-item"></el-input>
                         <el-button @click="findSearchPage()" class="dalfBut">查询</el-button>
                         <el-button type="primary" class="butT" @click="handleCreate()">新建权限</el-button>
                     </div>
+
                     <el-table size="small" current-row-key="id" :data="dataList" stripe highlight-current-row>
                         <el-table-column  align="center" label="序号" prop="id"></el-table-column>
                         <el-table-column label="编号" align="center" prop="id">
@@ -58,6 +62,8 @@
                             </template>
                         </el-table-column>
                     </el-table>
+
+                    <!-- 分页插件 -->
                     <div class="pagination-container">
                         <el-pagination
                             class="pagiantion"
@@ -68,8 +74,10 @@
                             :total="pagination.total">
                         </el-pagination>
                     </div>
+
                     <!-- 新增标签弹层 -->
                     <div class="add-form">
+                        <!-- visible false隐藏 -->
                         <el-dialog title="新增" :visible.sync="dialogFormVisible">
                                     <el-form ref="dataAddForm" :model="formData" :rules="rules" label-position="right" label-width="100px">
                                         <el-row>
@@ -189,8 +197,9 @@
                 },//表单数据
                 dialogFormVisible: false,//增加表单是否可见
                 dialogFormVisibleEdit:false,
+                <!-- 必填项，参数校验 -->
                 rules: {//校验规则
-                    tagName: [{ required: true, message: '必填项', trigger: 'blur' }],
+                    name: [{ required: true, message: '必填项', trigger: 'blur' }],
                 }
 
             },
@@ -246,6 +255,7 @@
                 //分页查询
                 findPage() {
                     axios.post("/admin/permission/permissionList",this.pagination).then((res)=>{
+                        <!-- res.data 后端返回的数据 -->
                         if (res.data.success){
                             this.dataList = res.data.data.list;
                             this.pagination.total = res.data.data.total;
@@ -271,6 +281,7 @@
                 handleUpdate(row) {
                     this.resetForm();
                     this.dialogFormVisibleEdit = true;
+                    <!-- 数据回显 -->
                     this.formData = row;
                 },
                 //切换页码
@@ -278,6 +289,7 @@
                     this.pagination.currentPage = currentPage;
                     this.findPage();
                 },
+                //删除
                 handleDelete(row){
                     this.$confirm('此操作将永久删除该数据, 是否继续?', '提示', {
                         confirmButtonText: '确定',

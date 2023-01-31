@@ -5,8 +5,14 @@ import lombok.Data;
 @Data
 public class PageParam {
 
+    /**
+     * 当前页数
+     */
     private Integer currentPage;
 
+    /**
+     * 每页显示的数量
+     */
     private Integer pageSize;
 
     /**
