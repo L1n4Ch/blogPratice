@@ -1,11 +1,16 @@
 package com.lsc.blog.vo;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.Data;
 
 import java.util.List;
 
 @Data
 public class ArticleVo {
+
+    // 解决因雪花算法导致精度缺失 导致有些文章正文无法显示的问题
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long id;
 
     private String title;
@@ -23,10 +28,9 @@ public class ArticleVo {
 
     private String author;
 
-    // "文章体" 在 首页 文章列表中不需要展示
-    //    private ArticleBodyVo body;
+    private ArticleBodyVo body;
 
     private List<TagVo> tags;
 
-    //    private CategoryVo category;
+    private CategoryVo category;
 }

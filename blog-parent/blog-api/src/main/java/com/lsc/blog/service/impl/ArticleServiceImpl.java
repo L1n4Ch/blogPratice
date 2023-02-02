@@ -3,11 +3,16 @@ package com.lsc.blog.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lsc.blog.dao.dos.Archives;
+import com.lsc.blog.dao.mapper.ArticleBodyMapper;
 import com.lsc.blog.dao.mapper.ArticleMapper;
+import com.lsc.blog.dao.mapper.CategoryMapeer;
 import com.lsc.blog.dao.pojo.Article;
+import com.lsc.blog.dao.pojo.ArticleBody;
 import com.lsc.blog.service.ArticleService;
+import com.lsc.blog.service.CategoryService;
 import com.lsc.blog.service.SysUserService;
 import com.lsc.blog.service.TagService;
+import com.lsc.blog.vo.ArticleBodyVo;
 import com.lsc.blog.vo.ArticleVo;
 import com.lsc.blog.vo.Result;
 import com.lsc.blog.vo.params.PageParams;
@@ -29,6 +34,9 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Autowired
     private SysUserService sysUserService;
+
+    @Autowired
+    private CategoryService categoryService;
 
     @Override
     public Result listArticle(PageParams pageParams) {
@@ -82,7 +90,27 @@ public class ArticleServiceImpl implements ArticleService {
         // copy -> copyList ： 本质即使用for循环遍历record，得到recordList（records），再add至articleVoList
             // for循环快捷键 ： records.for
         for (Article record : records) {
-            articleVoList.add(copy(record, isTag, isAuthor));
+            articleVoList.add(copy(record, isTag, isAuthor, false, false));
+        }
+        return articleVoList;
+    }
+
+    /**
+     * 这里对上面的copyList进行了重载，方法名相同，参数不同
+     * 因为上面的copyList还有别的用途，下面的copyList用于文章详情
+     * @param records
+     * @param isTag
+     * @param isAuthor
+     * @param isBody
+     * @param isCategory
+     * @return
+     */
+    private List<ArticleVo> copyList(List<Article> records, boolean isTag, boolean isAuthor, boolean isBody, boolean isCategory) {
+        List<ArticleVo> articleVoList = new ArrayList<>();
+        // copy -> copyList ： 本质即使用for循环遍历record，得到recordList（records），再add至articleVoList
+        // for循环快捷键 ： records.for
+        for (Article record : records) {
+            articleVoList.add(copy(record, isTag, isAuthor, true, true));
         }
         return articleVoList;
     }
@@ -91,7 +119,7 @@ public class ArticleServiceImpl implements ArticleService {
     // ArticleVo里有 tag和author属性。
     // 而Article里则没有这两个属性，而且并不是所有接口都需要这两个属性
     // 所以copy需要加一层判断：isTag isAuthor
-    private ArticleVo copy(Article article, boolean isTag, boolean isAuthor){
+    private ArticleVo copy(Article article, boolean isTag, boolean isAuthor, boolean isBody, boolean isCategory){
         ArticleVo articleVo = new ArticleVo();
         BeanUtils.copyProperties(article,articleVo);
         // 注意Article和ArticleVo的createDate，类型不同，一个是Long一个是String，无法直接copy，这里进行set并使用toString转换
@@ -107,7 +135,42 @@ public class ArticleServiceImpl implements ArticleService {
             Long authorId = article.getAuthorId();
             articleVo.setAuthor(sysUserService.findUserById(authorId).getNickname());
         }
+        if(isBody){
+            Long bodyId = article.getBodyId();
+            articleVo.setBody(findArticleBodyById(bodyId));
+        }
+        if(isCategory){
+            Long categoryId = article.getCategoryId();
+            // 这里category单独属于一个类别 创建categoryService
+            articleVo.setCategory(categoryService.findCategoryById(categoryId));
+        }
         return articleVo;
+    }
+
+    @Autowired
+    private ArticleBodyMapper articleBodyMapper;
+
+    @Autowired
+    private CategoryMapeer categoryMapeer;
+
+    private ArticleBodyVo findArticleBodyById(Long bodyId) {
+        ArticleBody articleBody = articleBodyMapper.selectById(bodyId);
+        ArticleBodyVo articleBodyVo = new ArticleBodyVo();
+        articleBodyVo.setContent(articleBody.getContent());
+        return articleBodyVo;
+    }
+
+    @Override
+    public Result findArticleById(Long articleId) {
+
+        // 1.根据id查询文章信息
+        // 2.文章详情还包括了 标签/文章分类 要进行表的关联查询（根据bodyId和categoryId做关联查询）
+        // ps.返回ArticleVo对象
+
+        Article article = this.articleMapper.selectById(articleId);
+        ArticleVo articleVo = copy(article, true, true, true, true);
+        return Result.success(articleVo);
+
     }
 
 }

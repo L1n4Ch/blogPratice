@@ -3,6 +3,7 @@ package com.lsc.blog.handler;
 import com.alibaba.fastjson.JSON;
 import com.lsc.blog.dao.pojo.SysUser;
 import com.lsc.blog.service.LoginService;
+import com.lsc.blog.utils.UserThreadLocal;
 import com.lsc.blog.vo.ErrorCode;
 import com.lsc.blog.vo.Result;
 import lombok.extern.slf4j.Slf4j;
@@ -41,15 +42,13 @@ public class LoginInterceptor implements HandlerInterceptor {
         }
         // 步骤2
         String token = request.getHeader("Authorization");
-
-        // 日志
+        // 这里插入控制台日志记录
         log.info("================request start==============");
         String requestURI = request.getRequestURI();
         log.info("request uri:{}",requestURI);
         log.info("request method:{}",request.getMethod());
         log.info("token:{}",token);
         log.info("================request end================");
-
         if(StringUtils.isBlank(token)){
             Result result = Result.fail(ErrorCode.NO_LOGIN.getCode(), ErrorCode.NO_LOGIN.getMsg());
             response.setContentType("application/json;charset=utf-8");
@@ -64,7 +63,16 @@ public class LoginInterceptor implements HandlerInterceptor {
             response.getWriter().print(JSON.toJSONString(result));
             return false;
         }
+        // 举例：在controller中拉取用户信息 （在testController中模拟使用实现功能）
+        UserThreadLocal.put(sysUser);
         // 步骤4
         return true;
     }
+
+    // 拉取完用户信息后，如果不删除 ThreadLocal中用完的用户信息 会有内存泄露的风险
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+        UserThreadLocal.remove();
+    }
+
 }
