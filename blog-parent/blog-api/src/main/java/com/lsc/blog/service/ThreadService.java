@@ -6,6 +6,9 @@ import com.lsc.blog.dao.pojo.Article;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
+/**
+ * 线程池的使用 - 用于文章详情与阅读次数功能的线程隔离
+ */
 @Component
 public class ThreadService {
 
