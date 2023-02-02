@@ -63,7 +63,7 @@ public class LoginInterceptor implements HandlerInterceptor {
             response.getWriter().print(JSON.toJSONString(result));
             return false;
         }
-        // 举例：在controller中拉取用户信息 （在testController中模拟使用实现功能）
+        // 举例：在controller中拉取用户信息 （在testController中模拟使用实现功能，在CommentsServiceImpl实现类的评论列表方法中也用到）
         UserThreadLocal.put(sysUser);
         // 步骤4
         return true;

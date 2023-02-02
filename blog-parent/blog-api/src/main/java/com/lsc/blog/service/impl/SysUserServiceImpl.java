@@ -8,7 +8,9 @@ import com.lsc.blog.service.SysUserService;
 import com.lsc.blog.vo.ErrorCode;
 import com.lsc.blog.vo.LoginUserVo;
 import com.lsc.blog.vo.Result;
+import com.lsc.blog.vo.UserVo;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -82,5 +84,27 @@ public class SysUserServiceImpl implements SysUserService {
         // 注意：保存用户时，id会自动生成，默认生成的id是分布式id（雪花算法）
         // mybatisPlus 默认使用分布式id（如果要改成自增id，在SysUser类的id上加注解：@TableId(type = IdType.AUTO)）
         this.sysUserMapper.insert(sysUser);
+    }
+
+    /**
+     * 为CommentsServiceImpl服务
+     * 跟findUserById方法类似
+     * @param id
+     * @return
+     */
+    @Override
+    public UserVo findUserVoById(Long id) {
+        SysUser sysUser = sysUserMapper.selectById(id);
+        if(sysUser == null){
+            sysUser = new SysUser();
+            sysUser.setAvatar("/static/img/logo.b3a48c0.png");
+            sysUser.setId(1L);
+            sysUser.setNickname("游客");
+        }
+        UserVo userVo = new UserVo();
+        // userVo.setId();.......
+        // 这里简化 无需一个个set，因为sysUser和userVo属性几乎一样 直接copy更快
+        BeanUtils.copyProperties(sysUser,userVo);
+        return userVo;
     }
 }

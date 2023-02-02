@@ -17,11 +17,11 @@ public class ArticleVo {
 
     private String summary;
 
-    private int commentCounts;
+    private Integer commentCounts;
 
-    private int viewCounts;
+    private Integer viewCounts;
 
-    private int weight;
+    private Integer weight;
 
     // 数据库，Article对象是Long型，vo对象呈现在前端的是String型
     private String createDates;

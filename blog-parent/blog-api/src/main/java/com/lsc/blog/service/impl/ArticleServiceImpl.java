@@ -8,10 +8,7 @@ import com.lsc.blog.dao.mapper.ArticleMapper;
 import com.lsc.blog.dao.mapper.CategoryMapeer;
 import com.lsc.blog.dao.pojo.Article;
 import com.lsc.blog.dao.pojo.ArticleBody;
-import com.lsc.blog.service.ArticleService;
-import com.lsc.blog.service.CategoryService;
-import com.lsc.blog.service.SysUserService;
-import com.lsc.blog.service.TagService;
+import com.lsc.blog.service.*;
 import com.lsc.blog.vo.ArticleBodyVo;
 import com.lsc.blog.vo.ArticleVo;
 import com.lsc.blog.vo.Result;
@@ -160,6 +157,9 @@ public class ArticleServiceImpl implements ArticleService {
         return articleBodyVo;
     }
 
+    @Autowired
+    private ThreadService threadService;
+
     @Override
     public Result findArticleById(Long articleId) {
 
@@ -169,6 +169,15 @@ public class ArticleServiceImpl implements ArticleService {
 
         Article article = this.articleMapper.selectById(articleId);
         ArticleVo articleVo = copy(article, true, true, true, true);
+
+        // 看完文章了 理应在此处新增阅读数？思考问题
+        // 问题1：查看完文章详情，本应直接返回数据 这时候如果新增阅读数（即做了一个更新操作），即更新时加了“写锁”（注意：不是所有更新都会加写锁），会阻塞其他的“读”操作，性能就会比较低
+        // 问题2：更新操作还会增加此次接口的耗时
+        // 思考解决办法
+        // 问题1没法解决，必定会降低性能，所以只能优化问题2 -- 即如果更新步骤出问题，不会因为耗时影响文章的查看
+        // 使用线程池技术解决 -- 把更新操作(更新文章阅读数)扔到线程池去执行 不会影响查看文章详情的主线程
+
+        threadService.updateArticleViewCount(articleMapper,article);
         return Result.success(articleVo);
 
     }
