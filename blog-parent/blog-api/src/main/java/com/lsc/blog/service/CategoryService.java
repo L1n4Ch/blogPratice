@@ -1,6 +1,7 @@
 package com.lsc.blog.service;
 
 import com.lsc.blog.vo.CategoryVo;
+import com.lsc.blog.vo.Result;
 
 public interface CategoryService {
     /**
@@ -9,4 +10,10 @@ public interface CategoryService {
      * @return
      */
     CategoryVo findCategoryById(Long categoryId);
+
+    /**
+     * 写文章-查询所有文章分类
+     * @return
+     */
+    Result findAll();
 }
