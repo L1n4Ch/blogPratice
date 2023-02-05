@@ -5,20 +5,28 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lsc.blog.dao.dos.Archives;
 import com.lsc.blog.dao.mapper.ArticleBodyMapper;
 import com.lsc.blog.dao.mapper.ArticleMapper;
+import com.lsc.blog.dao.mapper.ArticleTagMapper;
 import com.lsc.blog.dao.mapper.CategoryMapeer;
 import com.lsc.blog.dao.pojo.Article;
 import com.lsc.blog.dao.pojo.ArticleBody;
+import com.lsc.blog.dao.pojo.ArticleTag;
+import com.lsc.blog.dao.pojo.SysUser;
 import com.lsc.blog.service.*;
+import com.lsc.blog.utils.UserThreadLocal;
 import com.lsc.blog.vo.ArticleBodyVo;
 import com.lsc.blog.vo.ArticleVo;
 import com.lsc.blog.vo.Result;
+import com.lsc.blog.vo.TagVo;
+import com.lsc.blog.vo.params.ArticleParams;
 import com.lsc.blog.vo.params.PageParams;
 import org.joda.time.DateTime;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ArticleServiceImpl implements ArticleService {
@@ -34,6 +42,9 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Autowired
     private CategoryService categoryService;
+
+    @Autowired
+    private ArticleTagMapper articleTagMapper;
 
     @Override
     public Result listArticle(PageParams pageParams) {
@@ -150,6 +161,11 @@ public class ArticleServiceImpl implements ArticleService {
     @Autowired
     private CategoryMapeer categoryMapeer;
 
+    /**
+     * 文章内容？（非ArticleService方法）
+     * @param bodyId
+     * @return
+     */
     private ArticleBodyVo findArticleBodyById(Long bodyId) {
         ArticleBody articleBody = articleBodyMapper.selectById(bodyId);
         ArticleBodyVo articleBodyVo = new ArticleBodyVo();
@@ -182,4 +198,62 @@ public class ArticleServiceImpl implements ArticleService {
 
     }
 
+    @Override
+    public Result publish(ArticleParams articleParams) {
+
+        // 1.发布文章即构建Article对象
+        // 2.发布文章 需要获取作者id 即拿到当前的登录用户
+        // 3.发布文章 需要获取文章的标签 要将标签加入到关联列表中
+        // 4.发布文章 body 内容存储
+
+        // 步骤1
+        Article article = new Article();
+        // 步骤2
+        SysUser sysUser = UserThreadLocal.get();
+        article.setAuthorId(sysUser.getId());
+        article.setWeight(Article.Article_Common);
+        article.setSummary(articleParams.getSummary());
+        article.setViewCounts(0);
+        article.setTitle(articleParams.getTitle());
+        article.setSummary(articleParams.getSummary());
+        article.setCommentCounts(0);
+        article.setCreateDate(System.currentTimeMillis());
+        article.setCategoryId(articleParams.getCategory().getId());
+        // 步骤3
+        // insert文章后就会生成articleId
+        articleMapper.insert(article);
+        List<TagVo> tags = articleParams.getTags();
+        if(tags != null){
+            // tags.for
+            for (TagVo tag : tags) {
+                // 获取articleId （前因insert文章生成了articleId）
+                Long articleId = article.getId();
+                ArticleTag articleTag = new ArticleTag();
+                articleTag.setTagId(tag.getId());
+                articleTag.setArticleId(articleId);
+                articleTagMapper.insert(articleTag);
+            }
+        }
+        // 步骤4
+        // 同理 也要insert才能生成id
+        ArticleBody articleBody = new ArticleBody();
+        articleBody.setArticleId(article.getId());
+        articleBody.setContent(articleParams.getBody().getContent());
+        articleBody.setContentHtml(articleParams.getBody().getContentHtml());
+        articleBodyMapper.insert(articleBody);
+        article.setBodyId(articleBody.getId());
+        // 因为前面已经articleMapper.insert文章了，所以这里是update文章
+        articleMapper.updateById(article);
+
+        ArticleVo articleVo = new ArticleVo();
+        articleVo.setId(article.getId());
+        return Result.success(articleVo);
+
+//        // 还有一种写法
+//        Map<String, String> map = new HashMap<>();
+//        // 避免精度损失问题，使用toString
+//        map.put("id",article.getId().toString());
+//        return Result.success(map);
+
+    }
 }

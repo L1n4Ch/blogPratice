@@ -1,6 +1,7 @@
 package com.lsc.blog.service;
 
 import com.lsc.blog.vo.Result;
+import com.lsc.blog.vo.params.ArticleParams;
 import com.lsc.blog.vo.params.PageParams;
 
 public interface ArticleService {
@@ -38,4 +39,11 @@ public interface ArticleService {
      * @return
      */
     Result findArticleById(Long articleId);
+
+    /**
+     * 发布文章
+     * @param articleParams
+     * @return
+     */
+    Result publish(ArticleParams articleParams);
 }

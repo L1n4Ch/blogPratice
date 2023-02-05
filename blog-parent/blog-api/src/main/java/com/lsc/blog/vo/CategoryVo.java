@@ -8,7 +8,7 @@ public class CategoryVo {
     private Long id;
 
     /**
-     * 图标路径
+     * 图标路径（头像）
      */
     private String avatar;
 
