@@ -117,6 +117,7 @@ public class CommentsServiceImpl implements CommentsService {
         Long toUserId = commentParams.getToUserId();
         // 同上
         comment.setToUid(toUserId == null ? 0 :toUserId);
+        // 不返回commentVo对象的原因：vo属于输出，是给用户看的，而写评论，是对数据库的，不返回vo结果
         this.commentMapper.insert(comment);
         return Result.success(null);
     }
