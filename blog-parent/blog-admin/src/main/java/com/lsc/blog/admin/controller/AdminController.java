@@ -1,7 +1,11 @@
 package com.lsc.blog.admin.controller;
 
 import com.lsc.blog.admin.model.params.PageParam;
+import com.lsc.blog.admin.pojo.Article;
+import com.lsc.blog.admin.pojo.Comment;
 import com.lsc.blog.admin.pojo.Permission;
+import com.lsc.blog.admin.service.ArticleService;
+import com.lsc.blog.admin.service.CommentService;
 import com.lsc.blog.admin.service.PermissionService;
 import com.lsc.blog.admin.vo.Result;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +18,17 @@ public class AdminController {
     @Autowired
     private PermissionService permissionService;
 
+    @Autowired
+    private CommentService commentService;
+
+    @Autowired
+    private ArticleService articleService;
+
+    /**
+     * 权限列表的增删改查
+     * @param pageParam
+     * @return
+     */
     @PostMapping("permission/permissionList")
     public Result listPermission(@RequestBody PageParam pageParam){
         return permissionService.listPermission(pageParam);
@@ -32,6 +47,52 @@ public class AdminController {
     @GetMapping("permission/delete/{id}")
     public Result delete(@PathVariable("id") Long id){
         return permissionService.delete(id);
+    }
+
+    /**
+     * 评论列表的增删改查
+     * @param pageParam
+     * @return
+     */
+    @PostMapping("comment/commentList")
+    public Result listComment(@RequestBody PageParam pageParam){
+        return commentService.listComment(pageParam);
+    }
+
+//    @PostMapping("comment/add")
+//    public Result add(@RequestBody Comment comment){
+//        return commentService.add(comment);
+//    }
+
+    @PostMapping("comment/update")
+    public Result update(@RequestBody Comment comment){
+        return commentService.update(comment);
+    }
+
+    @GetMapping("comment/delete/{id}")
+    public Result deleteComment(@PathVariable("id") Long id){
+        return commentService.deleteComment(id);
+    }
+
+    /**
+     * 文章列表的增删改查
+     * @param pageParam
+     * @return
+     */
+    @PostMapping("article/articleList")
+    public Result listArticle(@RequestBody PageParam pageParam){
+        return articleService.listArticle(pageParam);
+    }
+
+
+    @PostMapping("article/update")
+    public Result update(@RequestBody Article article){
+        return articleService.update(article);
+    }
+
+    @GetMapping("article/delete/{id}")
+    public Result deleteArticle(@PathVariable("id") Long id){
+        return articleService.deleteArticle(id);
     }
 
 }

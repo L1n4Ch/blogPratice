@@ -16,6 +16,9 @@ public class CommentVo {
 
     private String content;
 
+    /**
+     * 子评论
+     */
     private List<CommentVo> childrens;
 
     private String createDate;

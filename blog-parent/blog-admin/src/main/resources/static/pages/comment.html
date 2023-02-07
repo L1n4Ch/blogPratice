@@ -4,9 +4,9 @@
         <!-- 页面meta -->
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>DASHABI管理后台</title>
-        <meta name="description" content="DASHABI管理后台">
-        <meta name="keywords" content="DASHABI管理后台">
+        <title>blog后台管理系统</title>
+        <meta name="description" content="blog后台管理系统">
+        <meta name="keywords" content="blog后台管理系统">
         <meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" name="viewport">
         <!-- 引入样式 -->
         <link rel="stylesheet" href="../plugins/elementui/index.css">
@@ -28,7 +28,7 @@
         <div id="app">
 
             <div class="content-header">
-                <h1>网站管理<small>权限管理</small></h1>
+                <h1>网站管理<small>评论管理</small></h1>
                 <el-breadcrumb separator-class="el-icon-arrow-right" class="breadcrumb">
                     <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
                     <el-breadcrumb-item>网站管理</el-breadcrumb-item>
@@ -42,9 +42,9 @@
                 <div class="box">
 
                     <div class="filter-container">
-                        <el-input placeholder="权限名称" v-model="pagination.queryString" style="width: 200px;" class="filter-item"></el-input>
+                        <el-input placeholder="评论内容" v-model="pagination.queryString" style="width: 200px;" class="filter-item"></el-input>
                         <el-button @click="findSearchPage()" class="dalfBut">查询</el-button>
-                        <el-button type="primary" class="butT" @click="handleCreate()">新建权限</el-button>
+<!--                        <el-button type="primary" class="butT" @click="handleCreate()">新建评论</el-button>-->
                     </div>
 
                     <!-- dataList.slice(0,3)...... -->
@@ -52,11 +52,13 @@
                         <el-table-column  align="center" label="序号" prop="id"></el-table-column>
                         <el-table-column label="编号" align="center" prop="id">
                         </el-table-column>
-                        <el-table-column label="名称" align="center" prop="name">
+                        <el-table-column label="评论内容" align="center" prop="content">
                         </el-table-column>
-                        <el-table-column label="路径" align="center" prop="path">
+                        <el-table-column label="文章编号" align="center" prop="articleId">
                         </el-table-column>
-                        <el-table-column label="描述" align="center" prop="description">
+                        <el-table-column label="用户编号" align="center" prop="authorId">
+                        </el-table-column>
+                        <el-table-column label="level" align="center" prop="level">
                         </el-table-column>
                         <el-table-column label="操作" align="center">
                             <!-- scope.row 每一行的数据 -->
@@ -79,39 +81,46 @@
                         </el-pagination>
                     </div>
 
-                    <!-- 新增标签弹层 -->
-                    <div class="add-form">
-                        <!-- visible false隐藏 -->
-                        <el-dialog title="新增" :visible.sync="dialogFormVisible">
-                                    <el-form ref="dataAddForm" :model="formData" :rules="rules" label-position="right" label-width="100px">
-                                        <el-row>
-                                            <el-col >
-                                                <el-form-item label="名称" prop="name">
-                                                    <el-input  v-model="formData.name"/>
-                                                </el-form-item>
-                                            </el-col>
-                                        </el-row>
-                                        <el-row>
-                                            <el-col >
-                                                <el-form-item label="路径" prop="path">
-                                                    <el-input  v-model="formData.path"/>
-                                                </el-form-item>
-                                            </el-col>
-                                        </el-row>
-                                        <el-row>
-                                            <el-col >
-                                                <el-form-item label="描述" prop="description">
-                                                    <el-input  v-model="formData.description"/>
-                                                </el-form-item>
-                                            </el-col>
-                                        </el-row>
-                                    </el-form>
-                            <div slot="footer" class="dialog-footer">
-                                <el-button @click="dialogFormVisible = false">取消</el-button>
-                                <el-button type="primary" @click="handleAdd()">确定</el-button>
-                            </div>
-                        </el-dialog>
-                    </div>
+<!--                    &lt;!&ndash; 新增标签弹层 &ndash;&gt;-->
+<!--                    <div class="add-form">-->
+<!--                        &lt;!&ndash; visible false隐藏 &ndash;&gt;-->
+<!--                        <el-dialog title="新增" :visible.sync="dialogFormVisible">-->
+<!--                                    <el-form ref="dataAddForm" :model="formData" :rules="rules" label-position="right" label-width="100px">-->
+<!--                                        <el-row>-->
+<!--                                            <el-col >-->
+<!--                                                <el-form-item label="评论内容" prop="content">-->
+<!--                                                    <el-input  v-model="formData.content"/>-->
+<!--                                                </el-form-item>-->
+<!--                                            </el-col>-->
+<!--                                        </el-row>-->
+<!--                                        <el-row>-->
+<!--                                            <el-col >-->
+<!--                                                <el-form-item label="文章编号" prop="articleId">-->
+<!--                                                    <el-input  v-model="formData.articleId"/>-->
+<!--                                                </el-form-item>-->
+<!--                                            </el-col>-->
+<!--                                        </el-row>-->
+<!--                                        <el-row>-->
+<!--                                            <el-col >-->
+<!--                                                <el-form-item label="用户编号" prop="authorId">-->
+<!--                                                    <el-input  v-model="formData.authorId"/>-->
+<!--                                                </el-form-item>-->
+<!--                                            </el-col>-->
+<!--                                        </el-row>-->
+<!--                                        <el-row>-->
+<!--                                            <el-col >-->
+<!--                                                <el-form-item label="level" prop="level">-->
+<!--                                                    <el-input  v-model="formData.level"/>-->
+<!--                                                </el-form-item>-->
+<!--                                            </el-col>-->
+<!--                                        </el-row>-->
+<!--                                    </el-form>-->
+<!--                            <div slot="footer" class="dialog-footer">-->
+<!--                                <el-button @click="dialogFormVisible = false">取消</el-button>-->
+<!--                                <el-button type="primary" @click="handleAdd()">确定</el-button>-->
+<!--                            </div>-->
+<!--                        </el-dialog>-->
+<!--                    </div>-->
 
                     <!-- 编辑标签弹层 -->
                     <div class="add-form">
@@ -119,22 +128,29 @@
                             <el-form ref="dataAddForm" :model="formData" :rules="rules" label-position="right" label-width="100px">
                                 <el-row>
                                     <el-col >
-                                        <el-form-item label="名称" prop="name">
-                                            <el-input  v-model="formData.name"/>
+                                        <el-form-item label="评论内容" prop="content">
+                                            <el-input  v-model="formData.content"/>
                                         </el-form-item>
                                     </el-col>
                                 </el-row>
                                 <el-row>
                                     <el-col >
-                                        <el-form-item label="路径" prop="path">
-                                            <el-input  v-model="formData.path"/>
+                                        <el-form-item label="文章编号" prop="articleId">
+                                            <el-input  v-model="formData.articleId" :disabled="true"/>
                                         </el-form-item>
                                     </el-col>
                                 </el-row>
                                 <el-row>
                                     <el-col >
-                                        <el-form-item label="描述" prop="description">
-                                            <el-input  v-model="formData.description"/>
+                                        <el-form-item label="用户编号" prop="authorId">
+                                            <el-input  v-model="formData.authorId" :disabled="true"/>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col >
+                                        <el-form-item label="level" prop="level">
+                                            <el-input  v-model="formData.level" :disabled="true"/>
                                         </el-form-item>
                                     </el-col>
                                 </el-row>
@@ -203,7 +219,7 @@
                 dialogFormVisibleEdit:false,
                 <!-- 必填项，参数校验 -->
                 rules: {//校验规则
-                    name: [{ required: true, message: '必填项', trigger: 'blur' }],
+                    content: [{ required: true, message: '必填项', trigger: 'blur' }],
                 }
 
             },
@@ -220,7 +236,7 @@
                 },
                 //编辑
                 handleEdit() {
-                    axios.post("/admin/permission/update",this.formData).then((res)=>{
+                    axios.post("/admin/comment/update",this.formData).then((res)=>{
                         if (res.data.success){
                             this.$message({
                                 message: '恭喜你，编辑成功',
@@ -235,30 +251,30 @@
                         }
                     });
                 },
-                //添加
-                handleAdd () {
-                    axios.post("/admin/permission/add",this.formData).then((res)=>{
-                        if (res.data.success){
-                            this.$message({
-                                message: '恭喜你，添加成功',
-                                type: 'success'
-                            });
-                            this.dialogFormVisible = false;
-                            this.findPage();
-                        }
-                    }).catch((error)=>{
-                        if (error == "Error: Request failed with status code 403"){
-                            this.$message.error("无操作权限");
-                        }
-                    });
-                },
+                // //添加
+                // handleAdd () {
+                //     axios.post("/admin/comment/add",this.formData).then((res)=>{
+                //         if (res.data.success){
+                //             this.$message({
+                //                 message: '恭喜你，添加成功',
+                //                 type: 'success'
+                //             });
+                //             this.dialogFormVisible = false;
+                //             this.findPage();
+                //         }
+                //     }).catch((error)=>{
+                //         if (error == "Error: Request failed with status code 403"){
+                //             this.$message.error("无操作权限");
+                //         }
+                //     });
+                // },
                 findSearchPage(){
                     this.pagination.currentPage = 1;
                     this.findPage();
                 },
                 //分页查询
                 findPage() {
-                    axios.post("/admin/permission/permissionList",this.pagination).then((res)=>{
+                    axios.post("/admin/comment/commentList",this.pagination).then((res)=>{
                         <!-- res.data 后端返回的数据 -->
                         if (res.data.success){
                             this.dataList = res.data.data.list;
@@ -276,11 +292,11 @@
                     this.subjects = [];
                     this.tableData = {};
                 },
-                // 弹出添加窗口
-                handleCreate() {
-                    this.resetForm();
-                    this.dialogFormVisible = true;
-                },
+                // // 弹出添加窗口
+                // handleCreate() {
+                //     this.resetForm();
+                //     this.dialogFormVisible = true;
+                // },
                 // 弹出编辑窗口
                 handleUpdate(row) {
                     this.resetForm();
@@ -300,7 +316,7 @@
                         cancelButtonText: '取消',
                         type: 'warning'
                     }).then(() => {
-                        axios.get("/admin/permission/delete/"+row.id).then((res)=>{
+                        axios.get("/admin/comment/delete/"+row.id).then((res)=>{
                             if (res.data.success){
                                 this.$message.success("删除成功");
                                 this.findPage();
