@@ -18,6 +18,11 @@ public class ArticleService {
     @Autowired
     private ArticleMapper articleMapper;
 
+    /**
+     * 查询文章列表
+     * @param pageParam
+     * @return
+     */
     public Result listArticle(PageParam pageParam) {
         Page<Article> page = new Page<>(pageParam.getCurrentPage(),pageParam.getPageSize());
         LambdaQueryWrapper<Article> queryWrapper = new LambdaQueryWrapper<>();

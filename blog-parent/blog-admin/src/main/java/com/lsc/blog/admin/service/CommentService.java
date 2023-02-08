@@ -17,6 +17,11 @@ public class CommentService {
     @Autowired
     private CommentMapper commentMapper;
 
+    /**
+     * 查询评论列表
+     * @param pageParam
+     * @return
+     */
     public Result listComment(PageParam pageParam){
         Page<Comment> page = new Page<>(pageParam.getCurrentPage(),pageParam.getPageSize());
         LambdaQueryWrapper<Comment> queryWrapper = new LambdaQueryWrapper<>();

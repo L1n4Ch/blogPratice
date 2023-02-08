@@ -2,9 +2,11 @@ package com.lsc.blog.admin.controller;
 
 import com.lsc.blog.admin.model.params.PageParam;
 import com.lsc.blog.admin.pojo.Article;
+import com.lsc.blog.admin.pojo.Category;
 import com.lsc.blog.admin.pojo.Comment;
 import com.lsc.blog.admin.pojo.Permission;
 import com.lsc.blog.admin.service.ArticleService;
+import com.lsc.blog.admin.service.CategoryService;
 import com.lsc.blog.admin.service.CommentService;
 import com.lsc.blog.admin.service.PermissionService;
 import com.lsc.blog.admin.vo.Result;
@@ -23,6 +25,9 @@ public class AdminController {
 
     @Autowired
     private ArticleService articleService;
+
+    @Autowired
+    private CategoryService categoryService;
 
     /**
      * 权限列表的增删改查
@@ -59,11 +64,6 @@ public class AdminController {
         return commentService.listComment(pageParam);
     }
 
-//    @PostMapping("comment/add")
-//    public Result add(@RequestBody Comment comment){
-//        return commentService.add(comment);
-//    }
-
     @PostMapping("comment/update")
     public Result update(@RequestBody Comment comment){
         return commentService.update(comment);
@@ -94,5 +94,32 @@ public class AdminController {
     public Result deleteArticle(@PathVariable("id") Long id){
         return articleService.deleteArticle(id);
     }
+
+    /**
+     * 分类列表的增删改查
+     * @param pageParam
+     * @return
+     */
+    @PostMapping("category/categoryList")
+    public Result listCategory(@RequestBody PageParam pageParam){
+        return categoryService.listCategory(pageParam);
+    }
+
+
+    @PostMapping("category/update")
+    public Result update(@RequestBody Category category){
+        return categoryService.update(category);
+    }
+
+    @GetMapping("category/delete/{id}")
+    public Result deleteCategory(@PathVariable("id") Long id){
+        return categoryService.deleteCategory(id);
+    }
+
+    @PostMapping("category/add")
+    public Result add(@RequestBody Category category){
+        return categoryService.add(category);
+    }
+
 
 }
