@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lsc.blog.admin.mapper.ArticleMapper;
 import com.lsc.blog.admin.model.params.PageParam;
 import com.lsc.blog.admin.pojo.Article;
-import com.lsc.blog.admin.pojo.Comment;
 import com.lsc.blog.admin.vo.PageResult;
 import com.lsc.blog.admin.vo.Result;
 import org.apache.commons.lang3.StringUtils;
