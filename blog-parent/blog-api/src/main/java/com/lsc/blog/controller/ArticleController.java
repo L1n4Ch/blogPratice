@@ -1,6 +1,6 @@
 package com.lsc.blog.controller;
 
-import com.lsc.blog.dao.pojo.Article;
+import com.lsc.blog.common.aop.LogAnnotation;
 import com.lsc.blog.service.ArticleService;
 import com.lsc.blog.vo.Result;
 import com.lsc.blog.vo.params.ArticleParams;
@@ -16,6 +16,8 @@ public class ArticleController {
     private ArticleService articleService;
 
     @PostMapping()
+    // 加上此注解 代表要对此接口记录日志
+    @LogAnnotation(module="文章",operator="获取文章列表")
     public Result listArticle(@RequestBody PageParams pageParams) {
         return articleService.listArticle(pageParams);
     }
