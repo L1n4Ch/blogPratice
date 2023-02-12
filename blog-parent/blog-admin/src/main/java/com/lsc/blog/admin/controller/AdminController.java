@@ -1,14 +1,8 @@
 package com.lsc.blog.admin.controller;
 
 import com.lsc.blog.admin.model.params.PageParam;
-import com.lsc.blog.admin.pojo.Article;
-import com.lsc.blog.admin.pojo.Category;
-import com.lsc.blog.admin.pojo.Comment;
-import com.lsc.blog.admin.pojo.Permission;
-import com.lsc.blog.admin.service.ArticleService;
-import com.lsc.blog.admin.service.CategoryService;
-import com.lsc.blog.admin.service.CommentService;
-import com.lsc.blog.admin.service.PermissionService;
+import com.lsc.blog.admin.pojo.*;
+import com.lsc.blog.admin.service.*;
 import com.lsc.blog.admin.vo.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +22,9 @@ public class AdminController {
 
     @Autowired
     private CategoryService categoryService;
+
+    @Autowired
+    private TagService tagService;
 
     /**
      * 权限列表的增删改查
@@ -119,6 +116,29 @@ public class AdminController {
     @PostMapping("category/add")
     public Result add(@RequestBody Category category){
         return categoryService.add(category);
+    }
+
+    /**
+     * 标签列表的增删改查
+     */
+    @PostMapping("tag/tagList")
+    public Result listTag(@RequestBody PageParam pageParam){
+        return tagService.listTag(pageParam);
+    }
+
+    @PostMapping("tag/update")
+    public Result update(@RequestBody Tag tag){
+        return tagService.update(tag);
+    }
+
+    @GetMapping("tag/delete/{id}")
+    public Result deleteTag(@PathVariable("id") Long id){
+        return tagService.deleteTag(id);
+    }
+
+    @PostMapping("tag/add")
+    public Result add(@RequestBody Tag tag){
+        return tagService.add(tag);
     }
 
 

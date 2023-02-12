@@ -28,7 +28,7 @@
         <div id="app">
 
             <div class="content-header">
-                <h1>网站管理<small>权限管理</small></h1>
+                <h1>网站管理<small>分类管理</small></h1>
                 <el-breadcrumb separator-class="el-icon-arrow-right" class="breadcrumb">
                     <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
                     <el-breadcrumb-item>网站管理</el-breadcrumb-item>
@@ -36,6 +36,7 @@
                     <el-breadcrumb-item>评论管理</el-breadcrumb-item>
                     <el-breadcrumb-item>文章管理</el-breadcrumb-item>
                     <el-breadcrumb-item>分类管理</el-breadcrumb-item>
+                    <el-breadcrumb-item>标签管理</el-breadcrumb-item>
                 </el-breadcrumb>
             </div>
 
@@ -45,7 +46,7 @@
                     <div class="filter-container">
                         <el-input placeholder="分类名称" v-model="pagination.queryString" style="width: 200px;" class="filter-item"></el-input>
                         <el-button @click="findSearchPage()" class="dalfBut">查询</el-button>
-                        <el-button type="primary" class="butT" @click="handleCreate()">新建权限</el-button>
+                        <el-button type="primary" class="butT" @click="handleCreate()">新建分类</el-button>
                     </div>
 
                     <!-- dataList.slice(0,3)...... -->

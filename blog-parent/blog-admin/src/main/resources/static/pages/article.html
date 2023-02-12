@@ -36,6 +36,7 @@
                     <el-breadcrumb-item>评论管理</el-breadcrumb-item>
                     <el-breadcrumb-item>文章管理</el-breadcrumb-item>
                     <el-breadcrumb-item>分类管理</el-breadcrumb-item>
+                    <el-breadcrumb-item>标签管理</el-breadcrumb-item>
                 </el-breadcrumb>
             </div>
 
@@ -207,11 +208,11 @@
             },
             methods: {
                 // 格式化表格消息内容 （单元格文字过多时）
+                // cellValue就是这一列每个元素里的值 row 行 column 列
                 stateFormat(row, column, cellValue) {
-                    // console.log(row , column , cellValue)
                     if (!cellValue) return "";
                     if (cellValue.length > 10) {
-                        //最长固定显示4个字符
+                        //最长固定显示10个字符
                         return cellValue.slice(0, 10) + "...";
                     }
                     return cellValue;

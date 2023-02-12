@@ -39,7 +39,7 @@ public class CategoryService {
     }
 
     /**
-     * 更新分类列表
+     * 更新分类
      * @param category
      * @return
      */
@@ -49,7 +49,7 @@ public class CategoryService {
     }
 
     /**
-     * 删除分类列表
+     * 删除分类
      * @param id
      * @return
      */
@@ -59,7 +59,7 @@ public class CategoryService {
     }
 
     /**
-     * 新增分类列表
+     * 新增分类
      * @param category
      * @return
      */

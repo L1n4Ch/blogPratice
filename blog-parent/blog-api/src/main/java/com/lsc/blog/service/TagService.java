@@ -33,4 +33,10 @@ public interface TagService {
      * @return
      */
     Result findAll();
+
+    /**
+     * 导航-文章标签
+     * @return
+     */
+    Result findAllDetail();
 }
