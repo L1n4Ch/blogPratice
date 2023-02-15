@@ -7,16 +7,10 @@ import com.lsc.blog.dao.mapper.ArticleBodyMapper;
 import com.lsc.blog.dao.mapper.ArticleMapper;
 import com.lsc.blog.dao.mapper.ArticleTagMapper;
 import com.lsc.blog.dao.mapper.CategoryMapeer;
-import com.lsc.blog.dao.pojo.Article;
-import com.lsc.blog.dao.pojo.ArticleBody;
-import com.lsc.blog.dao.pojo.ArticleTag;
-import com.lsc.blog.dao.pojo.SysUser;
+import com.lsc.blog.dao.pojo.*;
 import com.lsc.blog.service.*;
 import com.lsc.blog.utils.UserThreadLocal;
-import com.lsc.blog.vo.ArticleBodyVo;
-import com.lsc.blog.vo.ArticleVo;
-import com.lsc.blog.vo.Result;
-import com.lsc.blog.vo.TagVo;
+import com.lsc.blog.vo.*;
 import com.lsc.blog.vo.params.ArticleParams;
 import com.lsc.blog.vo.params.PageParams;
 import org.joda.time.DateTime;
@@ -24,9 +18,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class ArticleServiceImpl implements ArticleService {
@@ -203,7 +195,7 @@ public class ArticleServiceImpl implements ArticleService {
 
         // 1.发布文章即构建Article对象
         // 2.发布文章 需要获取作者id 即拿到当前的登录用户
-        // 3.发布文章 需要获取文章的标签 要将标签加入到关联列表中
+        // 3.发布文章 需要获取文章的标签 要将标签加入到关联列表中 (重点，结合数据库需要想到tag是关联表)
         // 4.发布文章 body 内容存储
 
         // 步骤1

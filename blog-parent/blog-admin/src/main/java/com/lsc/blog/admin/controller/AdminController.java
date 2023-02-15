@@ -26,6 +26,9 @@ public class AdminController {
     @Autowired
     private TagService tagService;
 
+    @Autowired
+    private ArticleBodyService articleBodyService;
+
     /**
      * 权限列表的增删改查
      * @param pageParam
@@ -141,5 +144,22 @@ public class AdminController {
         return tagService.add(tag);
     }
 
+    /**
+     * 文章内容的增删改查
+     */
+    @PostMapping("articleBody/articleBodyList")
+    public Result listArticleBody(@RequestBody PageParam pageParam){
+        return articleBodyService.listArticleBody(pageParam);
+    }
+
+    @PostMapping("articleBody/update")
+    public Result update(@RequestBody ArticleBody articleBody){
+        return articleBodyService.update(articleBody);
+    }
+
+    @GetMapping("articleBody/delete/{id}")
+    public Result deleteArticleBody(@PathVariable("id") Long id){
+        return articleBodyService.deleteArticleBody(id);
+    }
 
 }

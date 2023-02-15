@@ -28,7 +28,7 @@
         <div id="app">
 
             <div class="content-header">
-                <h1>网站管理<small>标签管理</small></h1>
+                <h1>网站管理<small>文章管理</small></h1>
                 <el-breadcrumb separator-class="el-icon-arrow-right" class="breadcrumb">
                     <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
                     <el-breadcrumb-item>网站管理</el-breadcrumb-item>
@@ -37,6 +37,7 @@
                     <el-breadcrumb-item>文章管理</el-breadcrumb-item>
                     <el-breadcrumb-item>分类管理</el-breadcrumb-item>
                     <el-breadcrumb-item>标签管理</el-breadcrumb-item>
+                    <el-breadcrumb-item>文章内容管理</el-breadcrumb-item>
                 </el-breadcrumb>
             </div>
 
@@ -44,9 +45,9 @@
                 <div class="box">
 
                     <div class="filter-container">
-                        <el-input placeholder="标签名称" v-model="pagination.queryString" style="width: 200px;" class="filter-item"></el-input>
+                        <el-input placeholder="文章id" v-model="pagination.queryString" style="width: 200px;" class="filter-item"></el-input>
                         <el-button @click="findSearchPage()" class="dalfBut">查询</el-button>
-                        <el-button type="primary" class="butT" @click="handleCreate()">新建标签</el-button>
+<!--                        <el-button type="primary" class="butT" @click="handleCreate()">新建文章</el-button>-->
                     </div>
 
                     <!-- dataList.slice(0,3)...... -->
@@ -54,15 +55,16 @@
                         <el-table-column  align="center" label="序号" prop="id"></el-table-column>
                         <el-table-column label="编号" align="center" prop="id">
                         </el-table-column>
-                        <el-table-column label="头像" align="center" prop="avatar">
+                        <el-table-column label="文章内容" align="center" prop="content">
                         </el-table-column>
-                        <el-table-column label="标签名称" align="center" prop="tagName">
+                        <el-table-column label="文章内容html" align="center" prop="contentHtml">
                         </el-table-column>
-                        <el-table-column label="操作" align="center">
+                        <el-table-column label="文章id" align="center" prop="articleId">
+                        </el-table-column>
                             <!-- scope.row 每一行的数据 -->
                             <template slot-scope="scope">
-                                <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
-                                <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
+                                <el-button type="text" @click="handleUpdate(scope.row)">编辑</el-button>
+                                <el-button type="text" @click="handleDelete(scope.row)">删除</el-button>
                             </template>
                         </el-table-column>
                     </el-table>
@@ -79,48 +81,28 @@
                         </el-pagination>
                     </div>
 
-                    <!-- 新增标签弹层 -->
-                    <div class="add-form">
-                        <!-- visible false隐藏 -->
-                        <el-dialog title="新增" :visible.sync="dialogFormVisible">
-                                    <el-form ref="dataAddForm" :model="formData" :rules="rules" label-position="right" label-width="100px">
-                                        <el-row>
-                                            <el-col >
-                                                <el-form-item label="头像" prop="avatar">
-                                                    <el-input  v-model="formData.avatar"/>
-                                                </el-form-item>
-                                            </el-col>
-                                        </el-row>
-                                        <el-row>
-                                            <el-col >
-                                                <el-form-item label="标签名称" prop="tagName">
-                                                    <el-input  v-model="formData.tagName"/>
-                                                </el-form-item>
-                                            </el-col>
-                                        </el-row>
-                                    </el-form>
-                            <div slot="footer" class="dialog-footer">
-                                <el-button @click="dialogFormVisible = false">取消</el-button>
-                                <el-button type="primary" @click="handleAdd()">确定</el-button>
-                            </div>
-                        </el-dialog>
-                    </div>
-
                     <!-- 编辑标签弹层 -->
                     <div class="add-form">
                         <el-dialog title="编辑" :visible.sync="dialogFormVisibleEdit">
                             <el-form ref="dataAddForm" :model="formData" :rules="rules" label-position="right" label-width="100px">
                                 <el-row>
                                     <el-col >
-                                        <el-form-item label="头像" prop="avatar">
-                                            <el-input  v-model="formData.avatar"/>
+                                        <el-form-item label="文章内容" prop="content">
+                                            <el-input  v-model="formData.content"/>
                                         </el-form-item>
                                     </el-col>
                                 </el-row>
                                 <el-row>
                                     <el-col >
-                                        <el-form-item label="标签名称" prop="tagName">
-                                            <el-input  v-model="formData.tagName"/>
+                                        <el-form-item label="文章内容html" prop="contentHtml">
+                                            <el-input  v-model="formData.contentHtml" :disabled="true"/>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col >
+                                        <el-form-item label="文章id" prop="articleId">
+                                            <el-input  v-model="formData.articleId"/>
                                         </el-form-item>
                                     </el-col>
                                 </el-row>
@@ -189,7 +171,7 @@
                 dialogFormVisibleEdit:false,
                 <!-- 必填项，参数校验 -->
                 rules: {//校验规则
-                    tagName: [{ required: true, message: '必填项', trigger: 'blur' }],
+                    content: [{ required: true, message: '必填项', trigger: 'blur' }],
                 }
 
             },
@@ -198,8 +180,16 @@
                 this.findPage();
             },
             methods: {
-                // 文件上传成功后的钩子，response为服务端返回的值，file为当前上传的文件封装成的js对象
-                // handleAvatarSuccess(response, file)
+                // 格式化表格消息内容 （单元格文字过多时）
+                // cellValue就是这一列每个元素里的值 row 行 column 列
+                stateFormat(row, column, cellValue) {
+                    if (!cellValue) return "";
+                    if (cellValue.length > 10) {
+                        //最长固定显示10个字符
+                        return cellValue.slice(0, 10) + "...";
+                    }
+                    return cellValue;
+                },
                 handleAvatarSuccess(){
 
                 },
@@ -208,7 +198,7 @@
                 },
                 //编辑
                 handleEdit() {
-                    axios.post("/admin/tag/update",this.formData).then((res)=>{
+                    axios.post("/admin/articleBody/update",this.formData).then((res)=>{
                         if (res.data.success){
                             this.$message({
                                 message: '恭喜你，编辑成功',
@@ -223,30 +213,13 @@
                         }
                     });
                 },
-                //添加
-                handleAdd () {
-                    axios.post("/admin/tag/add",this.formData).then((res)=>{
-                        if (res.data.success){
-                            this.$message({
-                                message: '恭喜你，添加成功',
-                                type: 'success'
-                            });
-                            this.dialogFormVisible = false;
-                            this.findPage();
-                        }
-                    }).catch((error)=>{
-                        if (error == "Error: Request failed with status code 403"){
-                            this.$message.error("无操作权限");
-                        }
-                    });
-                },
                 findSearchPage(){
                     this.pagination.currentPage = 1;
                     this.findPage();
                 },
                 //分页查询
                 findPage() {
-                    axios.post("/admin/tag/tagList",this.pagination).then((res)=>{
+                    axios.post("/admin/articleBody/articleBodyList",this.pagination).then((res)=>{
                         <!-- res.data 后端返回的数据 -->
                         if (res.data.success){
                             this.dataList = res.data.data.list;
@@ -264,12 +237,6 @@
                     this.subjects = [];
                     this.tableData = {};
                 },
-                // 弹出添加窗口
-                handleCreate() {
-                    this.resetForm();
-                    this.dialogFormVisible = true;
-                },
-                // 弹出编辑窗口
                 handleUpdate(row) {
                     this.resetForm();
                     this.dialogFormVisibleEdit = true;
@@ -288,7 +255,7 @@
                         cancelButtonText: '取消',
                         type: 'warning'
                     }).then(() => {
-                        axios.get("/admin/tag/delete/"+row.id).then((res)=>{
+                        axios.get("/admin/articleBody/delete/"+row.id).then((res)=>{
                             if (res.data.success){
                                 this.$message.success("删除成功");
                                 this.findPage();
