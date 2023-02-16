@@ -204,7 +204,6 @@ public class ArticleServiceImpl implements ArticleService {
         SysUser sysUser = UserThreadLocal.get();
         article.setAuthorId(sysUser.getId());
         article.setWeight(Article.Article_Common);
-        article.setSummary(articleParams.getSummary());
         article.setViewCounts(0);
         article.setTitle(articleParams.getTitle());
         article.setSummary(articleParams.getSummary());

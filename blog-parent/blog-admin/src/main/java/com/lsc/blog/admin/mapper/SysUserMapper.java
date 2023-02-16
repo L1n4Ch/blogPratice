@@ -1,9 +1,9 @@
 package com.lsc.blog.admin.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.lsc.blog.admin.pojo.ArticleBody;
+import com.lsc.blog.admin.pojo.SysUser;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
-public interface ArticleBodyMapper extends BaseMapper<ArticleBody> {
+public interface SysUserMapper extends BaseMapper<SysUser> {
 }

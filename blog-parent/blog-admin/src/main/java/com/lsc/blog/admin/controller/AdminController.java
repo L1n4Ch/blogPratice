@@ -27,7 +27,7 @@ public class AdminController {
     private TagService tagService;
 
     @Autowired
-    private ArticleBodyService articleBodyService;
+    private SysUserService sysUserService;
 
     /**
      * 权限列表的增删改查
@@ -145,21 +145,21 @@ public class AdminController {
     }
 
     /**
-     * 文章内容的增删改查
+     * 用户管理的增删改查
      */
-    @PostMapping("articleBody/articleBodyList")
-    public Result listArticleBody(@RequestBody PageParam pageParam){
-        return articleBodyService.listArticleBody(pageParam);
+    @PostMapping("sysUser/sysUserList")
+    public Result listSysUser(@RequestBody PageParam pageParam){
+        return sysUserService.listArticleBody(pageParam);
     }
 
-    @PostMapping("articleBody/update")
-    public Result update(@RequestBody ArticleBody articleBody){
-        return articleBodyService.update(articleBody);
+    @PostMapping("sysUser/update")
+    public Result update(@RequestBody SysUser sysUser){
+        return sysUserService.update(sysUser);
     }
 
-    @GetMapping("articleBody/delete/{id}")
-    public Result deleteArticleBody(@PathVariable("id") Long id){
-        return articleBodyService.deleteArticleBody(id);
+    @GetMapping("sysUser/delete/{id}")
+    public Result deleteSysUser(@PathVariable("id") Long id){
+        return sysUserService.deleteSysUser(id);
     }
 
 }
