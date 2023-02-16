@@ -26,7 +26,8 @@ public class CommentService {
         Page<Comment> page = new Page<>(pageParam.getCurrentPage(),pageParam.getPageSize());
         LambdaQueryWrapper<Comment> queryWrapper = new LambdaQueryWrapper<>();
         if(StringUtils.isNotBlank(pageParam.getQueryString())){
-            queryWrapper.eq(Comment::getContent, pageParam.getQueryString());
+//            queryWrapper.eq(Comment::getContent, pageParam.getQueryString());
+            queryWrapper.like(Comment::getContent,pageParam.getQueryString());
         }
         Page<Comment> commentPage = commentMapper.selectPage(page,queryWrapper);
         PageResult<Comment> pageResult = new PageResult<>();

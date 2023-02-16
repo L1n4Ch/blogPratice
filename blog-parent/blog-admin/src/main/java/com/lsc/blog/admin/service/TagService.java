@@ -27,7 +27,8 @@ public class TagService {
         Page<Tag> page = new Page<>(pageParam.getCurrentPage(), pageParam.getPageSize());
         LambdaQueryWrapper<Tag> queryWrapper = new LambdaQueryWrapper<>();
         if(StringUtils.isNotBlank(pageParam.getQueryString())){
-            queryWrapper.eq(Tag::getTagName, pageParam.getQueryString());
+//            queryWrapper.eq(Tag::getTagName, pageParam.getQueryString());
+            queryWrapper.like(Tag::getTagName,pageParam.getQueryString());
         }
         Page<Tag> tagPage = tagMapper.selectPage(page,queryWrapper);
         PageResult<Tag> pageResult = new PageResult<>();

@@ -26,7 +26,8 @@ public class ArticleService {
         Page<Article> page = new Page<>(pageParam.getCurrentPage(),pageParam.getPageSize());
         LambdaQueryWrapper<Article> queryWrapper = new LambdaQueryWrapper<>();
         if(StringUtils.isNotBlank(pageParam.getQueryString())){
-            queryWrapper.eq(Article::getTitle, pageParam.getQueryString());
+//            queryWrapper.eq(Article::getTitle, pageParam.getQueryString());
+            queryWrapper.like(Article::getTitle, pageParam.getQueryString());
         }
         Page<Article> articlePage = articleMapper.selectPage(page, queryWrapper);
         PageResult<Article> pageResult = new PageResult<>();

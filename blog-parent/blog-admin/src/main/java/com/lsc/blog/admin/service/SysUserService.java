@@ -27,7 +27,8 @@ public class SysUserService {
         Page<SysUser> page = new Page<>(pageParam.getCurrentPage(),pageParam.getPageSize());
         LambdaQueryWrapper<SysUser> queryWrapper = new LambdaQueryWrapper<>();
         if(StringUtils.isNotBlank(pageParam.getQueryString())){
-            queryWrapper.eq(SysUser::getNickname, pageParam.getQueryString());
+//            queryWrapper.eq(SysUser::getNickname, pageParam.getQueryString());
+            queryWrapper.like(SysUser::getNickname,pageParam.getQueryString());
         }
         Page<SysUser> sysUserPage = sysUserMapper.selectPage(page, queryWrapper);
         PageResult<SysUser> pageResult = new PageResult<>();

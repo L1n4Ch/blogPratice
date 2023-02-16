@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lsc.blog.admin.mapper.PermissionMapper;
 import com.lsc.blog.admin.model.params.PageParam;
 import com.lsc.blog.admin.pojo.Permission;
+import com.lsc.blog.admin.pojo.SysUser;
 import com.lsc.blog.admin.vo.PageResult;
 import com.lsc.blog.admin.vo.Result;
 import org.apache.commons.lang3.StringUtils;
@@ -32,7 +33,8 @@ public class PermissionService {
         // 查询
         LambdaQueryWrapper<Permission> queryWrapper = new LambdaQueryWrapper<>();
         if(StringUtils.isNotBlank(pageParam.getQueryString())){
-            queryWrapper.eq(Permission::getName, pageParam.getQueryString());
+//            queryWrapper.eq(Permission::getName, pageParam.getQueryString());
+            queryWrapper.like(Permission::getName,pageParam.getQueryString());
         }
 
         // 分页

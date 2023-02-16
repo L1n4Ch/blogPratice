@@ -28,7 +28,8 @@ public class CategoryService {
         Page<Category> page = new Page<>(pageParam.getCurrentPage(), pageParam.getPageSize());
         LambdaQueryWrapper<Category> queryWrapper = new LambdaQueryWrapper<>();
         if(StringUtils.isNotBlank(pageParam.getQueryString())){
-            queryWrapper.eq(Category::getCategoryName, pageParam.getQueryString());
+//            queryWrapper.eq(Category::getCategoryName, pageParam.getQueryString());
+            queryWrapper.like(Category::getCategoryName, pageParam.getQueryString());
         }
         Page<Category> categoryPage = categoryMapper.selectPage(page,queryWrapper);
         PageResult<Category> pageResult = new PageResult<>();
