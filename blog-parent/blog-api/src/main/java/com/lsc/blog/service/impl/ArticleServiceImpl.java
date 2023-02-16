@@ -137,17 +137,17 @@ public class ArticleServiceImpl implements ArticleService {
         if(isAuthor){
 
             // 同上，这里通过article类的get方法只能拿到authorId，所以使用authorId来作为id
-//            Long authorId = article.getAuthorId();
-//            articleVo.setAuthor(sysUserService.findUserById(authorId).getNickname());
+            Long authorId = article.getAuthorId();
+            articleVo.setAuthor(sysUserService.findUserById(authorId).getNickname());
 
             // 视频最后修改了代码 ArticleVo里的author返回值类为userVo
-            Long authorId = article.getAuthorId();
-            SysUser sysUser = sysUserService.findUserById(authorId);
-            UserVo userVo = new UserVo();
-            userVo.setAvatar(sysUser.getAvatar());
-            userVo.setId(sysUser.getId());
-            userVo.setNickname(sysUser.getNickname());
-            articleVo.setAuthor(userVo);
+//            Long authorId = article.getAuthorId();
+//            SysUser sysUser = sysUserService.findUserById(authorId);
+//            UserVo userVo = new UserVo();
+//            userVo.setAvatar(sysUser.getAvatar());
+//            userVo.setId(sysUser.getId());
+//            userVo.setNickname(sysUser.getNickname());
+//            articleVo.setAuthor(userVo);
         }
         if(isBody){
             Long bodyId = article.getBodyId();

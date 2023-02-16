@@ -28,8 +28,8 @@ public class ArticleVo {
     // 数据库，Article对象是Long型，vo对象呈现在前端的是String型
     private String createDates;
 
-//    private String author;
-    private UserVo author;
+    private String author;
+//    private UserVo author;
 
     private ArticleBodyVo body;
 
