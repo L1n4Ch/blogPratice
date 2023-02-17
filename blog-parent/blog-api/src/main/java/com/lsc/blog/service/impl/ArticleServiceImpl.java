@@ -46,6 +46,32 @@ public class ArticleServiceImpl implements ArticleService {
     public Result listArticle(PageParams pageParams) {
         Page<Article> page = new Page<>(pageParams.getPage(), pageParams.getPageSize());
         LambdaQueryWrapper<Article> queryWrapper = new LambdaQueryWrapper<>();
+        if(pageParams.getCategoryId() != null){
+            // 给pageParams加上参数tagId和categoryId，进行if判断，显示对应标签/分类下的文章
+            queryWrapper.eq(Article::getCategoryId,pageParams.getCategoryId());
+        }
+
+        // new一个articleId的list
+        List<Long> articleIdList = new ArrayList<>();
+
+        // 考验sql的理解
+        if(pageParams.getTagId() != null){
+            // 注意，article表中是没有tag字段 因为一篇文章有多个标签 使用article_tag关联表
+            // 实现过程：根据pageParams.getTagId()得到的tagId把所有的articleId查出来，然后使用"in"查询，插入下查询条件下
+            LambdaQueryWrapper<ArticleTag> articleTagLambdaQueryWrapper = new LambdaQueryWrapper<>();
+            // ArticleTag的tagId = pageParams的tagId
+            articleTagLambdaQueryWrapper.eq(ArticleTag::getTagId,pageParams.getTagId());
+            // 查到tags的List
+            List<ArticleTag> articleTags = articleTagMapper.selectList(articleTagLambdaQueryWrapper);
+            // 根据上面新建的空的list 对articleTags进行for循环
+            for (ArticleTag articleTag : articleTags) {
+                articleIdList.add(articleTag.getArticleId());
+            }
+            if(articleIdList.size() > 0){
+                // and id in(1,2,3)
+                queryWrapper.in(Article::getId,articleIdList);
+            }
+        }
         // 根据"创建时间"和"是否置顶"降序排序
         queryWrapper.orderByDesc(Article::getCreateDate,Article::getWeight);
         Page<Article> articlePage = articleMapper.selectPage(page, queryWrapper);
@@ -248,6 +274,7 @@ public class ArticleServiceImpl implements ArticleService {
             // insert文章后就会生成articleId
             this.articleMapper.insert(article);
         }
+        // tag
         List<TagVo> tags = articleParams.getTags();
         if(tags != null){
             // tags.for
@@ -266,6 +293,7 @@ public class ArticleServiceImpl implements ArticleService {
                 articleTagMapper.insert(articleTag);
             }
         }
+        // body
         // 步骤4
         // 同理 也要insert才能生成id
         if(isEdit){
