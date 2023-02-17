@@ -39,4 +39,11 @@ public interface TagService {
      * @return
      */
     Result findAllDetail();
+
+    /**
+     *
+     * @param id
+     * @return
+     */
+    Result findDetailById(Long id);
 }

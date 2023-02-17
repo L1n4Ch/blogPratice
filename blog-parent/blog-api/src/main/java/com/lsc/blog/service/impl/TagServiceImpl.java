@@ -6,10 +6,10 @@ import com.lsc.blog.dao.pojo.Tag;
 import com.lsc.blog.service.TagService;
 import com.lsc.blog.vo.Result;
 import com.lsc.blog.vo.TagVo;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -46,6 +46,7 @@ public class TagServiceImpl implements TagService {
     private TagVo copy(Tag tag) {
         TagVo tagVo = new TagVo();
         BeanUtils.copyProperties(tag, tagVo);
+        tagVo.setId(String.valueOf(tag.getId()));
         return tagVo;
     }
 
@@ -70,5 +71,11 @@ public class TagServiceImpl implements TagService {
         LambdaQueryWrapper<Tag> queryWrapper = new LambdaQueryWrapper<>();
         List<Tag> tags = tagMapper.selectList(queryWrapper);
         return Result.success(copyList(tags));
+    }
+
+    @Override
+    public Result findDetailById(Long id) {
+        Tag tag = tagMapper.selectById(id);
+        return Result.success(copy(tag));
     }
 }

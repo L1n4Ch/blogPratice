@@ -227,7 +227,7 @@ public class ArticleServiceImpl implements ArticleService {
             article.setId(articleParams.getId());
             article.setTitle(articleParams.getTitle());
             article.setSummary(articleParams.getSummary());
-            article.setCategoryId(articleParams.getCategory().getId());
+            article.setCategoryId(Long.parseLong(articleParams.getCategory().getId()));
             // 拿到对象就是拿到它的id
             articleMapper.updateById(article);
             // 如果存在文章，既可以使用“编辑”功能
@@ -243,7 +243,7 @@ public class ArticleServiceImpl implements ArticleService {
             article.setSummary(articleParams.getSummary());
             article.setCommentCounts(0);
             article.setCreateDate(System.currentTimeMillis());
-            article.setCategoryId(articleParams.getCategory().getId());
+            article.setCategoryId(Long.parseLong(articleParams.getCategory().getId()));
             // 步骤3
             // insert文章后就会生成articleId
             this.articleMapper.insert(article);
@@ -261,7 +261,7 @@ public class ArticleServiceImpl implements ArticleService {
                     articleTagMapper.delete(queryWrapper);
                 }
                 ArticleTag articleTag = new ArticleTag();
-                articleTag.setTagId(tag.getId());
+                articleTag.setTagId(Long.parseLong(tag.getId()));
                 articleTag.setArticleId(articleId);
                 articleTagMapper.insert(articleTag);
             }
