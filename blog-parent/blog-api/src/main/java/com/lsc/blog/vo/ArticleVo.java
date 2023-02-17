@@ -10,8 +10,8 @@ import java.util.List;
 public class ArticleVo {
 
     // 解决因雪花算法导致精度缺失 导致有些文章正文无法显示的问题
-    @JsonSerialize(using = ToStringSerializer.class)
-    private Long id;
+//    @JsonSerialize(using = ToStringSerializer.class)
+    private String id;
 
     private String title;
 
@@ -28,8 +28,8 @@ public class ArticleVo {
     // 数据库，Article对象是Long型，vo对象呈现在前端的是String型
     private String createDates;
 
-    private String author;
-//    private UserVo author;
+//    private String author;
+    private UserVo author;
 
     private ArticleBodyVo body;
 

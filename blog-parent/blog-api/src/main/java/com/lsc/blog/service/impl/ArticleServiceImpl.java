@@ -114,7 +114,7 @@ public class ArticleServiceImpl implements ArticleService {
         // copy -> copyList ： 本质即使用for循环遍历record，得到recordList（records），再add至articleVoList
         // for循环快捷键 ： records.for
         for (Article record : records) {
-            articleVoList.add(copy(record, isTag, isAuthor, true, true));
+            articleVoList.add(copy(record, isTag, isAuthor, isBody, isCategory));
         }
         return articleVoList;
     }
@@ -125,6 +125,8 @@ public class ArticleServiceImpl implements ArticleService {
     // 所以copy需要加一层判断：isTag isAuthor
     private ArticleVo copy(Article article, boolean isTag, boolean isAuthor, boolean isBody, boolean isCategory){
         ArticleVo articleVo = new ArticleVo();
+        // 新增了setId这一行代码
+        articleVo.setId(String.valueOf(article.getId()));
         BeanUtils.copyProperties(article,articleVo);
         // 注意Article和ArticleVo的createDate，类型不同，一个是Long一个是String，无法直接copy，这里进行set并使用toString转换
         articleVo.setCreateDates(new DateTime(article.getCreateDate()).toString("yyyy-MM-dd:mm"));
@@ -136,18 +138,19 @@ public class ArticleServiceImpl implements ArticleService {
         }
         if(isAuthor){
 
-            // 同上，这里通过article类的get方法只能拿到authorId，所以使用authorId来作为id
-            Long authorId = article.getAuthorId();
-            articleVo.setAuthor(sysUserService.findUserById(authorId).getNickname());
+//            // 同上，这里通过article类的get方法只能拿到authorId，所以使用authorId来作为id
+//            Long authorId = article.getAuthorId();
+//            articleVo.setAuthor(sysUserService.findUserById(authorId).getNickname());
 
             // 视频最后修改了代码 ArticleVo里的author返回值类为userVo
-//            Long authorId = article.getAuthorId();
-//            SysUser sysUser = sysUserService.findUserById(authorId);
-//            UserVo userVo = new UserVo();
-//            userVo.setAvatar(sysUser.getAvatar());
-//            userVo.setId(sysUser.getId());
-//            userVo.setNickname(sysUser.getNickname());
-//            articleVo.setAuthor(userVo);
+            Long authorId = article.getAuthorId();
+            SysUser sysUser = sysUserService.findUserById(authorId);
+            // 跟原来的代码不同是这里new了个UserVo
+            UserVo userVo = new UserVo();
+            userVo.setAvatar(sysUser.getAvatar());
+            userVo.setId(sysUser.getId().toString());
+            userVo.setNickname(sysUser.getNickname());
+            articleVo.setAuthor(userVo);
         }
         if(isBody){
             Long bodyId = article.getBodyId();
@@ -283,21 +286,22 @@ public class ArticleServiceImpl implements ArticleService {
             // 因为前面已经articleMapper.insert文章了，所以这里是update文章
             articleMapper.updateById(article);
         }
-        ArticleVo articleVo = new ArticleVo();
-        articleVo.setId(article.getId());
-        return Result.success(articleVo);
 
-//        // 还有一种写法
-//        Map<String, String> map = new HashMap<>();
-//        // 避免精度损失问题，使用toString
-//        map.put("id",article.getId().toString());
-//
-////        if(isEdit){
-////            //发送一条消息给rocketmq 当前文章更新了，更新一下缓存吧
-////            ArticleMessage articleMessage = new ArticleMessage();
-////            articleMessage.setArticleId(article.getId());
-////        }
-//        return Result.success(map);
+//        ArticleVo articleVo = new ArticleVo();
+//        articleVo.setId(article.getId());
+//        return Result.success(articleVo);
+
+        // 还有一种写法
+        Map<String, String> map = new HashMap<>();
+        // 避免精度损失问题，使用toString
+        map.put("id",article.getId().toString());
+
+//        if(isEdit){
+//            //发送一条消息给rocketmq 当前文章更新了，更新一下缓存吧
+//            ArticleMessage articleMessage = new ArticleMessage();
+//            articleMessage.setArticleId(article.getId());
+//        }
+        return Result.success(map);
 
     }
 }
