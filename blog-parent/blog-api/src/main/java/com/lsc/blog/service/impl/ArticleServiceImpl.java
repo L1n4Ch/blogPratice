@@ -236,31 +236,28 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public Result publish(ArticleParams articleParams) {
 
-        // 1.发布文章即构建Article对象
-        // 2.发布文章 需要获取作者id 即拿到当前的登录用户
-        // 3.发布文章 需要获取文章的标签 要将标签加入到关联列表中 (重点，结合数据库需要想到tag是关联表)
+        // 1.发布文章 需要获取作者id 即拿到当前的登录用户
+        // 2.发布文章 构建Article对象
+        // 3.发布文章 需要获取文章的标签 要将标签加入到关联列表中 (tag存在关联表)
         // 4.发布文章 body 内容存储
 
-        // 步骤2
-        SysUser sysUser = UserThreadLocal.get();
         // 步骤1
+        SysUser sysUser = UserThreadLocal.get();
+        // 步骤2
         Article article = new Article();
         boolean isEdit = false;
-        // 如果传了文章id 就是更新
+        // 如果有文章id 即已有文章 - 更新
         if(articleParams.getId() != null){
-            // new Article();并不是新建文章
             article = new Article();
             article.setId(articleParams.getId());
             article.setTitle(articleParams.getTitle());
             article.setSummary(articleParams.getSummary());
             article.setCategoryId(Long.parseLong(articleParams.getCategory().getId()));
-            // 拿到对象就是拿到它的id
+            // 对象作为参数 根据id update （拿到对象即拿到id）
             articleMapper.updateById(article);
-            // 如果存在文章，既可以使用“编辑”功能
-            isEdit = true;
+            isEdit = true; // 如果存在文章，既可以使用编辑（更新）功能
         }else {
-            // 如果没传文章id 就是新增
-            // 如果不存在文章，则新建一个文章，赋予其他属性默认值
+            // 如果没传文章id - 新增 新建文章 赋属性默认值
             article = new Article();
             article.setAuthorId(sysUser.getId());
             article.setWeight(Article.Article_Common);
@@ -270,18 +267,20 @@ public class ArticleServiceImpl implements ArticleService {
             article.setCommentCounts(0);
             article.setCreateDate(System.currentTimeMillis());
             article.setCategoryId(Long.parseLong(articleParams.getCategory().getId()));
-            // 步骤3
-            // insert文章后就会生成articleId
+            // 对象作为参数 根据id insert（insert文章后就会生成articleId）
             this.articleMapper.insert(article);
         }
+        // 步骤3
         // tag
         List<TagVo> tags = articleParams.getTags();
         if(tags != null){
             // tags.for
             for (TagVo tag : tags) {
-                // 获取articleId （前因insert文章生成了articleId）
+                // 获取articleId （因insert文章生成了articleId）
                 Long articleId = article.getId();
                 // 先删除
+                // 标签只能选一个，多选显示的是选中的最后一个，即只能减少不能增加。
+                // 如果删除掉那段代码，编辑可以增加但是不能减少。
                 if(isEdit){ // isEdit == true
                     LambdaQueryWrapper<ArticleTag> queryWrapper = Wrappers.lambdaQuery();
                     queryWrapper.eq(ArticleTag::getArticleId,articleId);
@@ -295,7 +294,6 @@ public class ArticleServiceImpl implements ArticleService {
         }
         // body
         // 步骤4
-        // 同理 也要insert才能生成id
         if(isEdit){
             ArticleBody articleBody = new ArticleBody();
             articleBody.setArticleId(article.getId());
@@ -309,9 +307,10 @@ public class ArticleServiceImpl implements ArticleService {
             articleBody.setArticleId(article.getId());
             articleBody.setContent(articleParams.getBody().getContent());
             articleBody.setContentHtml(articleParams.getBody().getContentHtml());
+            // insert生成文章即id
             articleBodyMapper.insert(articleBody);
             article.setBodyId(articleBody.getId());
-            // 因为前面已经articleMapper.insert文章了，所以这里是update文章
+            // 前面已insert文章，最后update
             articleMapper.updateById(article);
         }
 
@@ -319,11 +318,9 @@ public class ArticleServiceImpl implements ArticleService {
 //        articleVo.setId(article.getId());
 //        return Result.success(articleVo);
 
-        // 还有一种写法
         Map<String, String> map = new HashMap<>();
         // 避免精度损失问题，使用toString
         map.put("id",article.getId().toString());
-
 //        if(isEdit){
 //            //发送一条消息给rocketmq 当前文章更新了，更新一下缓存吧
 //            ArticleMessage articleMessage = new ArticleMessage();
