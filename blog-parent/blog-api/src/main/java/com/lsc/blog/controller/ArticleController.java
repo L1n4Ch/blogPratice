@@ -39,16 +39,26 @@ public class ArticleController {
         return articleService.listArchives();
     }
 
-    @PostMapping("view/{id}")
-    public Result findArticleById(@PathVariable("id") Long articleId){
-        return articleService.findArticleById(articleId);
-    }
-
     @PostMapping("publish")
     public Result publish(@RequestBody ArticleParams articleParams){
         return articleService.publish(articleParams);
     }
 
+    /**
+     * 获取文章详情
+     * @param articleId
+     * @return
+     */
+    @PostMapping("view/{id}")
+    public Result findArticleById(@PathVariable("id") Long articleId){
+        return articleService.findArticleById(articleId);
+    }
+
+    /**
+     * 编辑文章时，获取文章详情
+     * @param articleId
+     * @return
+     */
     @PostMapping("{id}")
     public Result articleById(@PathVariable("id") Long articleId){
         return articleService.findArticleById(articleId);

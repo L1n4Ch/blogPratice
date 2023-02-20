@@ -270,22 +270,25 @@ public class ArticleServiceImpl implements ArticleService {
             // 对象作为参数 根据id insert（insert文章后就会生成articleId）
             this.articleMapper.insert(article);
         }
+
         // 步骤3
         // tag
         List<TagVo> tags = articleParams.getTags();
+        // 获取articleId （因insert文章生成了articleId）
+        Long articleId = article.getId();
+
+        // 先删除
+        // 标签只能选一个，多选显示的是选中的最后一个，即只能减少不能增加。
+        // 如果删除掉那段代码，编辑可以增加但是不能减少。
+        // 解决办法：把这段代码放在标签判定循环之前！！！！！
+        if(isEdit){ // isEdit == true
+            LambdaQueryWrapper<ArticleTag> queryWrapper = Wrappers.lambdaQuery();
+            queryWrapper.eq(ArticleTag::getArticleId,articleId);
+            articleTagMapper.delete(queryWrapper);
+        }
         if(tags != null){
             // tags.for
             for (TagVo tag : tags) {
-                // 获取articleId （因insert文章生成了articleId）
-                Long articleId = article.getId();
-                // 先删除
-                // 标签只能选一个，多选显示的是选中的最后一个，即只能减少不能增加。
-                // 如果删除掉那段代码，编辑可以增加但是不能减少。
-                if(isEdit){ // isEdit == true
-                    LambdaQueryWrapper<ArticleTag> queryWrapper = Wrappers.lambdaQuery();
-                    queryWrapper.eq(ArticleTag::getArticleId,articleId);
-                    articleTagMapper.delete(queryWrapper);
-                }
                 ArticleTag articleTag = new ArticleTag();
                 articleTag.setTagId(Long.parseLong(tag.getId()));
                 articleTag.setArticleId(articleId);
