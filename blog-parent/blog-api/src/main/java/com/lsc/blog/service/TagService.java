@@ -41,7 +41,7 @@ public interface TagService {
     Result findAllDetail();
 
     /**
-     *
+     * 显示对应标签的文章列表
      * @param id
      * @return
      */

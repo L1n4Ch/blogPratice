@@ -47,7 +47,8 @@ public class ArticleServiceImpl implements ArticleService {
         Page<Article> page = new Page<>(pageParams.getPage(), pageParams.getPageSize());
         LambdaQueryWrapper<Article> queryWrapper = new LambdaQueryWrapper<>();
         if(pageParams.getCategoryId() != null){
-            // 给pageParams加上参数tagId和categoryId，进行if判断，显示对应标签/分类下的文章
+            // 显示对应标签/分类下的文章
+            // 给pageParams加上参数tagId和categoryId，进行if判断
             queryWrapper.eq(Article::getCategoryId,pageParams.getCategoryId());
         }
 

@@ -4,6 +4,7 @@ import com.lsc.blog.vo.CategoryVo;
 import com.lsc.blog.vo.Result;
 
 public interface CategoryService {
+
     /**
      * 根据分类Id获得分类
      * @param categoryId
@@ -24,7 +25,7 @@ public interface CategoryService {
     Result findAllDetail();
 
     /**
-     *
+     * 显示对应分类的文章列表
      * @param id
      * @return
      */

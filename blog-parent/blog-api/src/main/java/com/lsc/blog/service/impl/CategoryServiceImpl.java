@@ -49,7 +49,7 @@ public class CategoryServiceImpl implements CategoryService {
         LambdaQueryWrapper<Category> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.select(Category::getId,Category::getCategoryName);
         List<Category> categories = categoryMapeer.selectList(queryWrapper);
-        // 注意：下面为原来的写法，视频里偷偷增加了查询条件
+        // 下面为原来的写法，视频里增加了查询条件 原来是获取全部字段
 //        List<Category> categories = categoryMapeer.selectList(new LambdaQueryWrapper<>());
         return Result.success(copyList(categories));
     }
