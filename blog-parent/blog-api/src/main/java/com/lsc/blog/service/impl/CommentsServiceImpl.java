@@ -38,6 +38,8 @@ public class CommentsServiceImpl implements CommentsService {
         LambdaQueryWrapper<Comment> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Comment::getArticleId,id);
         queryWrapper.eq(Comment::getLevel,1);
+        // 倒序排序楼层评论
+        queryWrapper.orderByDesc(Comment::getCreateDate);
         // 步骤1
         List<Comment> comments = commentMapper.selectList(queryWrapper);
         List<CommentVo> commentVoList = copyList(comments);
